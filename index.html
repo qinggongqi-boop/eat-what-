@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#f7f4ec" />
+    <title>吃罢了？｜上班带饭计划</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="app-header">
+        <div>
+          <p class="eyebrow">上班带饭计划</p>
+          <h1>吃罢了？</h1>
+        </div>
+        <button class="icon-button" id="openSettings" type="button" aria-label="打开设置">
+          <span class="icon">⚙</span>
+        </button>
+      </header>
+
+      <main>
+        <section class="view active" id="view-random" aria-labelledby="randomTitle">
+          <div class="random-hero">
+            <div>
+              <p class="eyebrow">明日饭盒</p>
+              <h2 id="randomTitle">明天这盒吃什么</h2>
+              <div class="setting-summary" id="randomSummary"></div>
+            </div>
+            <div class="mode-row" id="modeRow" aria-label="饭盒快捷模式">
+              <button class="mode-chip active" data-mode="default" type="button">省脑默认</button>
+              <button class="mode-chip" data-mode="quick" type="button">快手 20 分钟</button>
+              <button class="mode-chip" data-mode="lean" type="button">低卡高蛋白</button>
+            </div>
+            <div class="preset-row" aria-label="随机组合快捷选择">
+              <button class="preset-chip" data-preset-meat="1" data-preset-veg="1" type="button">蛋白 + 蔬菜</button>
+              <button class="preset-chip" data-preset-meat="1" data-preset-veg="0" type="button">只要蛋白</button>
+              <button class="preset-chip" data-preset-meat="0" data-preset-veg="1" type="button">只要蔬菜</button>
+              <button class="preset-chip" data-preset-meat="2" data-preset-veg="0" type="button">双蛋白</button>
+            </div>
+            <button class="primary-button random-cta" id="randomizeBtn" type="button">
+              <span>生成明日饭盒</span>
+            </button>
+          </div>
+          <div class="lunchbox-panel" id="lunchboxPanel" hidden></div>
+          <div class="draw-stage" id="drawStage" aria-hidden="true">
+            <div class="draw-card">
+              <p class="draw-label">正在给你配饭</p>
+              <div class="draw-reels" id="drawReels"></div>
+            </div>
+          </div>
+          <div class="recipe-grid" id="randomResults"></div>
+          <p class="empty-hint" id="randomHint"></p>
+          <div class="shopping-panel" id="shoppingPanel" hidden></div>
+          <div class="history-panel" id="weekHistoryPanel"></div>
+        </section>
+
+        <section class="view" id="view-diy" aria-labelledby="diyTitle">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">自由 DIY</p>
+              <h2 id="diyTitle">自己搭一份</h2>
+            </div>
+            <button class="ghost-button" id="clearDiyBtn" type="button">清空</button>
+          </div>
+          <div class="diy-board">
+            <div>
+              <p class="board-label">已选组合</p>
+              <div class="selected-list" id="selectedRecipes"></div>
+            </div>
+            <div class="combo-summary" id="comboSummary"></div>
+          </div>
+          <div class="catalog-block">
+            <div class="section-head compact">
+              <div>
+                <p class="eyebrow">从菜谱里选</p>
+                <h3>按食材挑菜</h3>
+              </div>
+            </div>
+            <div class="filter-groups" id="diyFilters"></div>
+            <div class="recipe-grid" id="diyRecipeList"></div>
+          </div>
+          <div class="recommend-block">
+            <div class="section-head compact">
+              <div>
+                <p class="eyebrow">搭配建议</p>
+                <h3 id="recommendTitle">先选一道喜欢的菜</h3>
+              </div>
+            </div>
+            <div class="recipe-grid compact-grid" id="recommendations"></div>
+          </div>
+        </section>
+
+        <section class="view" id="view-recipes" aria-labelledby="recipesTitle">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">菜谱列表</p>
+              <h2 id="recipesTitle">挑一道能带的</h2>
+            </div>
+            <button class="primary-button" id="addRecipeBtn" type="button">加菜谱</button>
+          </div>
+          <label class="search-box">
+            <span>搜索菜名或食材</span>
+            <input id="recipeSearch" type="search" placeholder="例如：鸡胸肉、番茄、豆腐" />
+          </label>
+          <div class="filter-groups" id="filters"></div>
+          <div class="recipe-grid" id="recipeList"></div>
+        </section>
+
+        <section class="view" id="view-my" aria-labelledby="myTitle">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">我的</p>
+              <h2 id="myTitle">你的带饭偏好</h2>
+            </div>
+          </div>
+
+          <div class="my-section">
+            <div class="section-head compact">
+              <div>
+                <p class="eyebrow">常做收藏</p>
+                <h3>喜欢的菜</h3>
+              </div>
+            </div>
+            <div class="recipe-grid" id="favoriteList"></div>
+            <p class="empty-hint" id="favoriteHint"></p>
+          </div>
+
+          <div class="my-section">
+            <div class="section-head compact">
+              <div>
+                <p class="eyebrow">减少打扰</p>
+                <h3>不喜欢的菜</h3>
+              </div>
+            </div>
+            <div class="recipe-grid" id="blockedList"></div>
+            <p class="empty-hint" id="blockedHint"></p>
+          </div>
+
+          <div class="my-section">
+            <div class="section-head compact">
+              <div>
+                <p class="eyebrow">自定义菜谱</p>
+                <h3>自己加的菜</h3>
+              </div>
+              <button class="ghost-button" id="addRecipeFromMyBtn" type="button">加菜谱</button>
+            </div>
+            <div class="recipe-grid" id="customList"></div>
+            <p class="empty-hint" id="customHint"></p>
+          </div>
+
+          <form class="settings-form" id="settingsForm">
+            <p class="board-label">随机设置</p>
+            <label class="switch-row">
+              <span>
+                <strong>多推收藏菜</strong>
+                <small>随机和推荐时提高收藏菜出现概率</small>
+              </span>
+              <input id="preferFavorites" type="checkbox" />
+            </label>
+
+            <div class="number-row">
+              <label for="randomMeatCount">
+                <strong>每次随机荤菜</strong>
+                <small>支持 0 道起</small>
+              </label>
+              <input id="randomMeatCount" type="number" min="0" max="5" inputmode="numeric" />
+            </div>
+
+            <div class="number-row">
+              <label for="randomVegCount">
+                <strong>每次随机素菜</strong>
+                <small>支持 0 道起</small>
+              </label>
+              <input id="randomVegCount" type="number" min="0" max="5" inputmode="numeric" />
+            </div>
+            <p class="form-note" id="settingsNote">默认 1 荤 1 素；总菜数不能为 0。</p>
+          </form>
+
+          <form class="settings-form" id="profileForm">
+            <p class="board-label">带饭画像</p>
+            <label>
+              <span class="form-label">你更像哪类带饭人</span>
+              <select id="profileUserType">
+                <option value="office">上班带饭</option>
+                <option value="lean">减脂控卡</option>
+                <option value="beginner">新手做饭</option>
+                <option value="partner">情侣/室友一起吃</option>
+              </select>
+            </label>
+            <div class="profile-group">
+              <p class="filter-label">饭盒约束</p>
+              <div class="toggle-grid">
+                <label><input id="hasMicrowave" type="checkbox" />有微波炉</label>
+                <label><input id="hasFridge" type="checkbox" />有冰箱</label>
+                <label><input id="longCommute" type="checkbox" />通勤较久</label>
+                <label><input id="shortDinnerPrep" type="checkbox" />晚上不想做太久</label>
+              </div>
+            </div>
+            <div class="profile-group">
+              <p class="filter-label">饮食目标</p>
+              <div class="toggle-grid">
+                <label><input name="goal" value="saveTime" type="checkbox" />省时间</label>
+                <label><input name="goal" value="lowCal" type="checkbox" />低卡</label>
+                <label><input name="goal" value="protein" type="checkbox" />高蛋白</label>
+                <label><input name="goal" value="lowOil" type="checkbox" />少油</label>
+                <label><input name="goal" value="overnight" type="checkbox" />隔夜不难吃</label>
+              </div>
+            </div>
+          </form>
+
+          <div class="my-section">
+            <div class="section-head compact">
+              <div>
+                <p class="eyebrow">本地记录</p>
+                <h3>本周饭盒</h3>
+              </div>
+            </div>
+            <div class="meal-history-list" id="mealHistoryList"></div>
+            <p class="empty-hint" id="mealHistoryHint"></p>
+          </div>
+
+          <div class="data-tools">
+            <button class="primary-button" id="shareStateBtn" type="button">生成共享链接</button>
+            <button class="ghost-button" id="exportAllBtn" type="button">导出全部本地数据</button>
+            <label class="ghost-button file-button">
+              导入全部本地数据
+              <input id="importAllInput" type="file" accept="application/json" />
+            </label>
+            <button class="ghost-button" id="clearHistoryBtn" type="button">清空带饭记录</button>
+            <button class="ghost-button" id="clearProfileBtn" type="button">清空偏好</button>
+            <button class="ghost-button" id="exportBtn" type="button">只导出自定义菜谱</button>
+            <label class="ghost-button file-button">
+              只导入自定义菜谱
+              <input id="importInput" type="file" accept="application/json" />
+            </label>
+          </div>
+          <div class="share-box" id="shareBox" hidden>
+            <p class="board-label">共享链接</p>
+            <textarea id="shareUrl" rows="3" readonly></textarea>
+            <p class="form-note">复制后发给对方。对方打开链接即可导入这份随机结果、DIY 组合、收藏、不喜欢、自定义菜谱和设置。</p>
+          </div>
+        </section>
+      </main>
+
+      <nav class="bottom-nav" aria-label="主导航">
+        <button class="nav-item active" data-view="random" type="button"><span>🎲</span>随机</button>
+        <button class="nav-item" data-view="diy" type="button"><span>🧺</span>DIY</button>
+        <button class="nav-item" data-view="recipes" type="button"><span>📋</span>菜谱</button>
+        <button class="nav-item" data-view="my" type="button"><span>♥</span>我的</button>
+      </nav>
+    </div>
+
+    <dialog class="recipe-dialog" id="recipeDialog">
+      <div class="dialog-head">
+        <div>
+          <p class="eyebrow" id="dialogMeta"></p>
+          <h2 id="dialogTitle"></h2>
+        </div>
+        <button class="icon-button" id="closeDialog" type="button" aria-label="关闭详情">×</button>
+      </div>
+      <div id="dialogBody"></div>
+    </dialog>
+
+    <dialog class="recipe-dialog" id="customDialog">
+      <div class="dialog-head">
+        <div>
+          <p class="eyebrow">自定义菜谱</p>
+          <h2 id="customDialogTitle">添加自己的菜</h2>
+        </div>
+        <button class="icon-button" id="closeCustomDialog" type="button" aria-label="关闭自定义菜谱">×</button>
+      </div>
+      <form class="custom-form" id="customRecipeForm">
+        <input id="editingRecipeId" type="hidden" />
+        <label>
+          <span>菜名 <b>必填</b></span>
+          <input id="customName" type="text" required placeholder="例如：番茄炒蛋" />
+        </label>
+        <label>
+          <span>分类 <b>必填</b></span>
+          <select id="customType" required>
+            <option value="meat">荤菜</option>
+            <option value="veg">素菜</option>
+            <option value="egg">蛋类</option>
+            <option value="tofu">豆制品</option>
+            <option value="staple">主食</option>
+          </select>
+        </label>
+        <label>
+          <span>食材 <b>必填</b></span>
+          <input id="customIngredients" type="text" required placeholder="用逗号分隔，例如：番茄, 鸡蛋" />
+        </label>
+        <label>
+          <span>操作步骤</span>
+          <textarea id="customSteps" rows="3" placeholder="选填，写个大概也可以"></textarea>
+        </label>
+        <label>
+          <span>调料</span>
+          <input id="customSeasonings" type="text" placeholder="例如：盐, 生抽, 黑胡椒" />
+        </label>
+        <div class="form-pair">
+          <label>
+            <span>热量估算</span>
+            <input id="customCalories" type="number" min="0" inputmode="numeric" placeholder="kcal" />
+          </label>
+          <label>
+            <span>耗时</span>
+            <input id="customTime" type="number" min="1" inputmode="numeric" placeholder="分钟" />
+          </label>
+        </div>
+        <label>
+          <span>买菜提示</span>
+          <textarea id="customTips" rows="2" placeholder="选填，例如：番茄选沉手微微软的"></textarea>
+        </label>
+        <fieldset>
+          <legend>菜谱图标</legend>
+          <div class="icon-picker" id="customIconPicker"></div>
+        </fieldset>
+        <fieldset>
+          <legend>场景标签</legend>
+          <div class="tag-picker" id="customTagPicker"></div>
+        </fieldset>
+        <label>
+          <span>自定义场景</span>
+          <input id="customExtraTags" type="text" placeholder="选填，用逗号分隔，例如：不辣, 适合晚餐" />
+        </label>
+        <button class="primary-button full" type="submit">保存菜谱</button>
+      </form>
+    </dialog>
+
+    <dialog class="recipe-dialog" id="shareImportDialog">
+      <div class="dialog-head">
+        <div>
+          <p class="eyebrow">共享同步</p>
+          <h2>发现一份共享带饭计划</h2>
+        </div>
+        <button class="icon-button" id="closeShareImport" type="button" aria-label="关闭共享导入">×</button>
+      </div>
+      <div class="detail-section">
+        <p id="shareImportSummary"></p>
+      </div>
+      <div class="dialog-actions">
+        <button class="ghost-button" id="ignoreShareImport" type="button">先不导入</button>
+        <button class="primary-button" id="acceptShareImport" type="button">导入这份设置</button>
+      </div>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="./app.js"></script>
+  </body>
+</html>
