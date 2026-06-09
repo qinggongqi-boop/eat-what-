@@ -117,6 +117,7 @@ h3 {
 .primary-button,
 .ghost-button,
 .nav-item,
+.section-toggle,
 .mode-chip,
 .chip,
 .action-button {
@@ -1110,9 +1111,13 @@ h3 {
 .section-toggle {
   min-height: 48px;
   padding: 0;
+  border: 0;
+  border-radius: var(--radius);
   color: var(--text);
   background: transparent;
   text-align: left;
+  appearance: none;
+  -webkit-appearance: none;
 }
 
 .section-toggle span {
