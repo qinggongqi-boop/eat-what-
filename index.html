@@ -24,23 +24,19 @@
           <div class="random-hero">
             <div>
               <p class="eyebrow">明日饭盒</p>
-              <h2 id="randomTitle">明天这盒吃什么</h2>
+              <h2 id="randomTitle">明天带什么？</h2>
               <div class="setting-summary" id="randomSummary"></div>
-            </div>
-            <div class="mode-row" id="modeRow" aria-label="饭盒快捷模式">
-              <button class="mode-chip active" data-mode="default" type="button">省脑默认</button>
-              <button class="mode-chip" data-mode="quick" type="button">快手 20 分钟</button>
-              <button class="mode-chip" data-mode="lean" type="button">低卡高蛋白</button>
-            </div>
-            <div class="preset-row" aria-label="随机组合快捷选择">
-              <button class="preset-chip" data-preset-meat="1" data-preset-veg="1" type="button">蛋白 + 蔬菜</button>
-              <button class="preset-chip" data-preset-meat="1" data-preset-veg="0" type="button">只要蛋白</button>
-              <button class="preset-chip" data-preset-meat="0" data-preset-veg="1" type="button">只要蔬菜</button>
-              <button class="preset-chip" data-preset-meat="2" data-preset-veg="0" type="button">双蛋白</button>
             </div>
             <button class="primary-button random-cta" id="randomizeBtn" type="button">
               <span>生成明日饭盒</span>
             </button>
+            <div class="preset-row" aria-label="随机组合快捷选择">
+              <span class="preset-label">搭配</span>
+              <button class="preset-chip" data-preset-meat="1" data-preset-veg="1" type="button">蛋白+蔬菜</button>
+              <button class="preset-chip" data-preset-meat="1" data-preset-veg="0" type="button">只蛋白</button>
+              <button class="preset-chip" data-preset-meat="0" data-preset-veg="1" type="button">只蔬菜</button>
+              <button class="preset-chip" data-preset-meat="2" data-preset-veg="0" type="button">双蛋白</button>
+            </div>
           </div>
           <div class="lunchbox-panel" id="lunchboxPanel" hidden></div>
           <div class="draw-stage" id="drawStage" aria-hidden="true">
@@ -48,6 +44,10 @@
               <p class="draw-label">正在给你配饭</p>
               <div class="draw-reels" id="drawReels"></div>
             </div>
+          </div>
+          <div class="recipe-section-head" id="randomRecipeHead" hidden>
+            <p class="eyebrow">饭盒里的菜</p>
+            <h3>具体就吃这两道</h3>
           </div>
           <div class="recipe-grid" id="randomResults"></div>
           <p class="empty-hint" id="randomHint"></p>
@@ -58,7 +58,7 @@
         <section class="view" id="view-diy" aria-labelledby="diyTitle">
           <div class="section-head">
             <div>
-              <p class="eyebrow">自由 DIY</p>
+              <p class="eyebrow">自由自选</p>
               <h2 id="diyTitle">自己搭一份</h2>
             </div>
             <button class="ghost-button" id="clearDiyBtn" type="button">清空</button>
@@ -115,42 +115,53 @@
             </div>
           </div>
 
-          <div class="my-section">
-            <div class="section-head compact">
-              <div>
-                <p class="eyebrow">常做收藏</p>
-                <h3>喜欢的菜</h3>
-              </div>
-            </div>
+          <div class="my-section collapsible-section" data-section-key="favorites">
+            <button class="section-toggle" data-toggle-section="favorites" type="button">
+              <span>
+                <small>常做收藏</small>
+                <strong>喜欢的菜</strong>
+              </span>
+              <em id="favoriteCount">0</em>
+            </button>
             <div class="recipe-grid" id="favoriteList"></div>
             <p class="empty-hint" id="favoriteHint"></p>
           </div>
 
-          <div class="my-section">
-            <div class="section-head compact">
-              <div>
-                <p class="eyebrow">减少打扰</p>
-                <h3>不喜欢的菜</h3>
-              </div>
-            </div>
+          <div class="my-section collapsible-section" data-section-key="blocked">
+            <button class="section-toggle" data-toggle-section="blocked" type="button">
+              <span>
+                <small>减少打扰</small>
+                <strong>不喜欢的菜</strong>
+              </span>
+              <em id="blockedCount">0</em>
+            </button>
             <div class="recipe-grid" id="blockedList"></div>
             <p class="empty-hint" id="blockedHint"></p>
           </div>
 
-          <div class="my-section">
-            <div class="section-head compact">
-              <div>
-                <p class="eyebrow">自定义菜谱</p>
-                <h3>自己加的菜</h3>
-              </div>
+          <div class="my-section collapsible-section" data-section-key="custom">
+            <div class="section-toggle-row">
+              <button class="section-toggle" data-toggle-section="custom" type="button">
+                <span>
+                  <small>自定义菜谱</small>
+                  <strong>自己加的菜</strong>
+                </span>
+                <em id="customCount">0</em>
+              </button>
               <button class="ghost-button" id="addRecipeFromMyBtn" type="button">加菜谱</button>
             </div>
             <div class="recipe-grid" id="customList"></div>
             <p class="empty-hint" id="customHint"></p>
           </div>
 
-          <form class="settings-form" id="settingsForm">
-            <p class="board-label">随机设置</p>
+          <form class="settings-form collapsible-section" id="settingsForm" data-section-key="preferences">
+            <button class="section-toggle" data-toggle-section="preferences" type="button">
+              <span>
+                <small>我的偏好</small>
+                <strong>随机设置</strong>
+              </span>
+              <em>默认展开</em>
+            </button>
             <label class="switch-row">
               <span>
                 <strong>多推收藏菜</strong>
@@ -161,7 +172,7 @@
 
             <div class="number-row">
               <label for="randomMeatCount">
-                <strong>每次随机荤菜</strong>
+                <strong>每次随机蛋白</strong>
                 <small>支持 0 道起</small>
               </label>
               <input id="randomMeatCount" type="number" min="0" max="5" inputmode="numeric" />
@@ -169,83 +180,59 @@
 
             <div class="number-row">
               <label for="randomVegCount">
-                <strong>每次随机素菜</strong>
+                <strong>每次随机蔬菜</strong>
                 <small>支持 0 道起</small>
               </label>
               <input id="randomVegCount" type="number" min="0" max="5" inputmode="numeric" />
             </div>
-            <p class="form-note" id="settingsNote">默认 1 荤 1 素；总菜数不能为 0。</p>
+            <p class="form-note" id="settingsNote">默认 1 蛋白 1 蔬菜；总菜数不能为 0。</p>
           </form>
 
-          <form class="settings-form" id="profileForm">
-            <p class="board-label">带饭画像</p>
-            <label>
-              <span class="form-label">你更像哪类带饭人</span>
-              <select id="profileUserType">
-                <option value="office">上班带饭</option>
-                <option value="lean">减脂控卡</option>
-                <option value="beginner">新手做饭</option>
-                <option value="partner">情侣/室友一起吃</option>
-              </select>
-            </label>
-            <div class="profile-group">
-              <p class="filter-label">饭盒约束</p>
-              <div class="toggle-grid">
-                <label><input id="hasMicrowave" type="checkbox" />有微波炉</label>
-                <label><input id="hasFridge" type="checkbox" />有冰箱</label>
-                <label><input id="longCommute" type="checkbox" />通勤较久</label>
-                <label><input id="shortDinnerPrep" type="checkbox" />晚上不想做太久</label>
-              </div>
-            </div>
-            <div class="profile-group">
-              <p class="filter-label">饮食目标</p>
-              <div class="toggle-grid">
-                <label><input name="goal" value="saveTime" type="checkbox" />省时间</label>
-                <label><input name="goal" value="lowCal" type="checkbox" />低卡</label>
-                <label><input name="goal" value="protein" type="checkbox" />高蛋白</label>
-                <label><input name="goal" value="lowOil" type="checkbox" />少油</label>
-                <label><input name="goal" value="overnight" type="checkbox" />隔夜不难吃</label>
-              </div>
-            </div>
-          </form>
-
-          <div class="my-section">
-            <div class="section-head compact">
-              <div>
-                <p class="eyebrow">本地记录</p>
-                <h3>本周饭盒</h3>
-              </div>
-            </div>
+          <div class="my-section collapsible-section" data-section-key="history">
+            <button class="section-toggle" data-toggle-section="history" type="button">
+              <span>
+                <small>本地记录</small>
+                <strong>本周饭盒</strong>
+              </span>
+              <em id="mealHistoryCount">0</em>
+            </button>
             <div class="meal-history-list" id="mealHistoryList"></div>
             <p class="empty-hint" id="mealHistoryHint"></p>
           </div>
 
-          <div class="data-tools">
-            <button class="primary-button" id="shareStateBtn" type="button">生成共享链接</button>
-            <button class="ghost-button" id="exportAllBtn" type="button">导出全部本地数据</button>
-            <label class="ghost-button file-button">
-              导入全部本地数据
-              <input id="importAllInput" type="file" accept="application/json" />
-            </label>
-            <button class="ghost-button" id="clearHistoryBtn" type="button">清空带饭记录</button>
-            <button class="ghost-button" id="clearProfileBtn" type="button">清空偏好</button>
-            <button class="ghost-button" id="exportBtn" type="button">只导出自定义菜谱</button>
-            <label class="ghost-button file-button">
-              只导入自定义菜谱
-              <input id="importInput" type="file" accept="application/json" />
-            </label>
-          </div>
-          <div class="share-box" id="shareBox" hidden>
-            <p class="board-label">共享链接</p>
-            <textarea id="shareUrl" rows="3" readonly></textarea>
-            <p class="form-note">复制后发给对方。对方打开链接即可导入这份随机结果、DIY 组合、收藏、不喜欢、自定义菜谱和设置。</p>
-          </div>
+          <details class="data-panel">
+            <summary>
+              <span>
+                <strong>数据管理</strong>
+                <small>共享、导入导出和清空本地记录</small>
+              </span>
+            </summary>
+            <div class="data-tools">
+              <button class="primary-button" id="shareStateBtn" type="button">生成共享链接</button>
+              <button class="ghost-button" id="exportAllBtn" type="button">导出全部本地数据</button>
+              <label class="ghost-button file-button">
+                导入全部本地数据
+                <input id="importAllInput" type="file" accept="application/json" />
+              </label>
+              <button class="ghost-button" id="clearHistoryBtn" type="button">清空带饭记录</button>
+              <button class="ghost-button" id="exportBtn" type="button">只导出自定义菜谱</button>
+              <label class="ghost-button file-button">
+                只导入自定义菜谱
+                <input id="importInput" type="file" accept="application/json" />
+              </label>
+            </div>
+            <div class="share-box" id="shareBox" hidden>
+              <p class="board-label">共享链接</p>
+              <textarea id="shareUrl" rows="3" readonly></textarea>
+              <p class="form-note">复制后发给对方。对方打开链接即可导入这份随机结果、自选组合、收藏、不喜欢、自定义菜谱和设置。</p>
+            </div>
+          </details>
         </section>
       </main>
 
       <nav class="bottom-nav" aria-label="主导航">
-        <button class="nav-item active" data-view="random" type="button"><span>🎲</span>随机</button>
-        <button class="nav-item" data-view="diy" type="button"><span>🧺</span>DIY</button>
+        <button class="nav-item active" data-view="random" type="button"><span>🎲</span>配饭</button>
+        <button class="nav-item" data-view="diy" type="button"><span>🧺</span>自选</button>
         <button class="nav-item" data-view="recipes" type="button"><span>📋</span>菜谱</button>
         <button class="nav-item" data-view="my" type="button"><span>♥</span>我的</button>
       </nav>
@@ -279,8 +266,8 @@
         <label>
           <span>分类 <b>必填</b></span>
           <select id="customType" required>
-            <option value="meat">荤菜</option>
-            <option value="veg">素菜</option>
+            <option value="meat">蛋白</option>
+            <option value="veg">蔬菜</option>
             <option value="egg">蛋类</option>
             <option value="tofu">豆制品</option>
             <option value="staple">主食</option>

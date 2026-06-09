@@ -13,31 +13,43 @@ const TAGS = [
 ];
 
 const TYPE_META = {
-  meat: { label: "荤菜", icon: "meat" },
-  veg: { label: "素菜", icon: "veg" },
+  meat: { label: "蛋白", icon: "meat" },
+  veg: { label: "蔬菜", icon: "veg" },
   egg: { label: "蛋类", icon: "egg" },
   tofu: { label: "豆制品", icon: "tofu" },
   staple: { label: "主食", icon: "rice" },
 };
 
+const TIER_META = {
+  core: { label: "核心推荐" },
+  flexible: { label: "可选变化" },
+  lunchbox: { label: "完整饭盒" },
+};
+
 const ICON_LIBRARY = [
   { id: "dish", label: "家常菜", symbol: "🍽" },
-  { id: "meat", label: "荤菜", symbol: "🍖" },
+  { id: "meat", label: "蛋白", symbol: "🍖" },
   { id: "chicken", label: "鸡肉", symbol: "🍗" },
   { id: "beef", label: "牛肉", symbol: "🥩" },
   { id: "pork", label: "猪肉", symbol: "🥓" },
-  { id: "fish", label: "鱼虾", symbol: "🦐" },
+  { id: "fish", label: "鱼类", symbol: "🐟" },
+  { id: "shrimp", label: "虾仁", symbol: "🦐" },
   { id: "egg", label: "鸡蛋", symbol: "🥚" },
-  { id: "tofu", label: "豆制品", symbol: "🫘" },
-  { id: "tofuDry", label: "香干", symbol: "🫘" },
+  { id: "tofu", label: "豆腐", symbol: "⬜" },
+  { id: "tofuDry", label: "香干", symbol: "🟫" },
   { id: "veg", label: "蔬菜", symbol: "🥗" },
   { id: "mushroom", label: "菌菇", symbol: "🍄" },
   { id: "leafy", label: "绿叶菜", symbol: "🥬" },
   { id: "root", label: "根茎菜", symbol: "🥕" },
-  { id: "lotus", label: "莲藕", symbol: "🪷" },
   { id: "celery", label: "芹菜", symbol: "🌿" },
   { id: "cabbage", label: "包菜", symbol: "🥬" },
+  { id: "zucchini", label: "西葫芦", symbol: "🥒" },
+  { id: "potato", label: "土豆", symbol: "🥔" },
   { id: "rice", label: "主食", symbol: "🍚" },
+  { id: "asparagus", label: "芦笋", symbol: "🌿" },
+  { id: "pepper", label: "彩椒", symbol: "🫑" },
+  { id: "bean", label: "豆类", symbol: "🫘" },
+  { id: "purple", label: "紫甘蓝", symbol: "🥬" },
 ];
 
 const INGREDIENT_GROUPS = [
@@ -61,7 +73,7 @@ const BUILT_IN_RECIPES = [
     mainIngredient: "鸡胸肉",
     ingredients: ["鸡胸肉", "西兰花", "蒜"],
     seasonings: ["生抽", "黑胡椒", "盐", "淀粉"],
-    steps: ["鸡胸肉切片，加生抽、黑胡椒、淀粉抓匀。", "西兰花焯水 40 秒。", "少油煎鸡胸肉，变色后加入西兰花和蒜末翻匀。"],
+    steps: ["鸡胸肉切片，加生抽、黑胡椒、淀粉抓匀腌 8 分钟。", "西兰花掰小朵，焯水 40 秒后沥干。", "少油煎鸡胸肉至变色，加入蒜末和西兰花翻匀。"],
     calories: 360,
     time: 15,
     tags: ["protein", "lowOil", "microwave", "overnight", "beginner"],
@@ -76,7 +88,7 @@ const BUILT_IN_RECIPES = [
     mainIngredient: "鸡蛋",
     ingredients: ["番茄", "鸡蛋", "葱"],
     seasonings: ["盐", "少量糖", "生抽"],
-    steps: ["鸡蛋打散先炒定型盛出。", "番茄炒出汁，加一点盐和少量糖。", "倒回鸡蛋翻匀，撒葱花。"],
+    steps: ["鸡蛋打散，热锅少油炒至刚定型后盛出。", "番茄切块炒出汁，加一点盐和少量糖。", "倒回鸡蛋翻匀，撒葱花。"],
     calories: 300,
     time: 10,
     tags: ["quick", "beginner", "overnight"],
@@ -106,7 +118,7 @@ const BUILT_IN_RECIPES = [
     mainIngredient: "猪里脊",
     ingredients: ["猪里脊", "黄瓜", "木耳", "蒜"],
     seasonings: ["生抽", "盐", "料酒", "淀粉"],
-    steps: ["猪里脊切片腌制。", "木耳泡发焯水，黄瓜切片。", "先炒肉片，再下黄瓜木耳快速翻炒。"],
+    steps: ["猪里脊切片，加料酒、生抽、淀粉抓匀腌 8 分钟。", "木耳泡发后焯水，黄瓜切片。", "少油先炒肉片至变色，再下黄瓜木耳快速翻炒。"],
     calories: 340,
     time: 18,
     tags: ["lowCal", "lowOil", "overnight", "beginner"],
@@ -116,12 +128,12 @@ const BUILT_IN_RECIPES = [
   {
     id: "shrimp-egg",
     name: "虾仁滑蛋",
-    type: "egg",
-    icon: "fish",
+    type: "meat",
+    icon: "shrimp",
     mainIngredient: "虾仁",
     ingredients: ["虾仁", "鸡蛋", "葱"],
     seasonings: ["盐", "白胡椒", "料酒"],
-    steps: ["虾仁用盐、白胡椒和料酒抓匀。", "鸡蛋打散，加少量水。", "虾仁炒至变色，倒入蛋液小火推熟。"],
+    steps: ["虾仁加盐、白胡椒和料酒抓匀腌 5 分钟。", "鸡蛋打散，加少量水。", "虾仁炒至变色，倒入蛋液小火推熟。"],
     calories: 330,
     time: 12,
     tags: ["quick", "protein", "lowCal", "beginner"],
@@ -136,7 +148,7 @@ const BUILT_IN_RECIPES = [
     mainIngredient: "豆腐",
     ingredients: ["嫩豆腐", "牛肉末", "蒜苗"],
     seasonings: ["豆瓣酱", "生抽", "花椒粉", "淀粉"],
-    steps: ["豆腐切块焯水。", "少油炒香牛肉末和豆瓣酱。", "加水和豆腐煮 3 分钟，勾薄芡后撒蒜苗。"],
+    steps: ["豆腐切块焯水，捞出沥干。", "少油炒香牛肉末和豆瓣酱。", "加水和豆腐煮 3 分钟，勾薄芡后撒蒜苗。"],
     calories: 390,
     time: 18,
     tags: ["protein", "microwave", "overnight"],
@@ -177,7 +189,7 @@ const BUILT_IN_RECIPES = [
     id: "lotus-pepper",
     name: "清炒藕片",
     type: "veg",
-    icon: "lotus",
+    icon: "root",
     mainIngredient: "莲藕",
     ingredients: ["莲藕", "青椒", "蒜"],
     seasonings: ["盐", "白醋"],
@@ -192,7 +204,7 @@ const BUILT_IN_RECIPES = [
     id: "celery-tofu-dry",
     name: "芹菜炒香干",
     type: "tofu",
-    icon: "celery",
+    icon: "tofuDry",
     mainIngredient: "香干",
     ingredients: ["芹菜", "香干", "胡萝卜"],
     seasonings: ["盐", "生抽", "五香粉"],
@@ -235,46 +247,586 @@ const BUILT_IN_RECIPES = [
   },
 ];
 
+const EXTRA_RECIPES = [
+  {
+    id: "chicken-mushroom",
+    name: "口蘑鸡胸肉",
+    type: "meat",
+    icon: "chicken",
+    mainIngredient: "鸡胸肉",
+    ingredients: ["鸡胸肉", "口蘑", "蒜"],
+    seasonings: ["生抽", "黑胡椒", "盐", "淀粉"],
+    steps: ["鸡胸肉切片，加生抽、黑胡椒、淀粉抓匀腌 8 分钟。", "口蘑切片，蒜切末。", "先煎鸡胸肉至变色，再下口蘑炒到收汁。"],
+    calories: 350,
+    time: 16,
+    tags: ["protein", "lowOil", "microwave", "overnight", "beginner"],
+    shoppingTips: "口蘑选伞面完整、颜色自然、不发黏的。",
+    substitutions: ["口蘑可换香菇", "鸡胸肉可换鸡腿肉去皮"],
+  },
+  {
+    id: "chicken-corn-carrot",
+    name: "玉米胡萝卜鸡丁",
+    type: "meat",
+    icon: "chicken",
+    mainIngredient: "鸡胸肉",
+    ingredients: ["鸡胸肉", "玉米粒", "胡萝卜", "青豆"],
+    seasonings: ["盐", "生抽", "黑胡椒", "淀粉"],
+    steps: ["鸡胸肉切丁，加盐、生抽、黑胡椒、淀粉抓匀腌 8 分钟。", "胡萝卜切丁，与玉米青豆焯水。", "少油炒鸡丁至变色，再倒入蔬菜丁炒匀。"],
+    calories: 390,
+    time: 18,
+    tags: ["protein", "lowOil", "microwave", "overnight", "beginner", "filling"],
+    shoppingTips: "冷冻杂蔬选颗粒分明、冰霜少的，适合工作日晚餐快手做。",
+    substitutions: ["青豆可省略", "鸡胸肉可换虾仁"],
+  },
+  {
+    id: "chicken-cucumber",
+    name: "黄瓜鸡丁",
+    type: "meat",
+    icon: "chicken",
+    mainIngredient: "鸡胸肉",
+    ingredients: ["鸡胸肉", "黄瓜", "胡萝卜"],
+    seasonings: ["生抽", "盐", "料酒", "淀粉"],
+    steps: ["鸡胸肉切丁，加生抽、料酒、淀粉抓匀腌 8 分钟。", "黄瓜和胡萝卜切丁。", "少油先炒鸡丁至变色，再快速下蔬菜丁翻匀。"],
+    calories: 330,
+    time: 15,
+    tags: ["protein", "lowCal", "lowOil", "beginner"],
+    shoppingTips: "黄瓜选刺硬、挺直的，带饭时黄瓜不要炒太久。",
+    substitutions: ["黄瓜可换西葫芦", "胡萝卜可换彩椒"],
+  },
+  {
+    id: "chicken-pumpkin",
+    name: "南瓜鸡腿丁",
+    type: "meat",
+    icon: "chicken",
+    mainIngredient: "鸡腿肉",
+    ingredients: ["鸡腿肉", "南瓜", "洋葱"],
+    seasonings: ["生抽", "盐", "黑胡椒"],
+    steps: ["鸡腿肉去皮切丁。", "南瓜切小块，洋葱切丝。", "先煎鸡腿丁，再加南瓜焖到软糯。"],
+    calories: 460,
+    time: 24,
+    tags: ["protein", "microwave", "overnight", "filling"],
+    shoppingTips: "南瓜选切面颜色深、质地紧实的，带饭复热后口感稳定。",
+    substitutions: ["南瓜可换土豆", "洋葱可省略"],
+  },
+  {
+    id: "beef-onion",
+    name: "洋葱牛肉片",
+    type: "meat",
+    icon: "beef",
+    mainIngredient: "牛肉",
+    ingredients: ["牛肉", "洋葱", "姜"],
+    seasonings: ["生抽", "蚝油", "黑胡椒", "淀粉"],
+    steps: ["牛肉逆纹切片腌 10 分钟。", "洋葱切丝。", "快炒牛肉变色后加洋葱和蚝油炒匀。"],
+    calories: 430,
+    time: 18,
+    tags: ["protein", "microwave", "overnight", "filling"],
+    shoppingTips: "牛肉选纹理细、出水少的，切片后更容易快熟。",
+    substitutions: ["牛肉可换猪里脊", "洋葱可换彩椒"],
+  },
+  {
+    id: "beef-tomato",
+    name: "番茄牛肉片",
+    type: "meat",
+    icon: "beef",
+    mainIngredient: "牛肉",
+    ingredients: ["牛肉", "番茄", "洋葱"],
+    seasonings: ["生抽", "盐", "黑胡椒", "淀粉"],
+    steps: ["牛肉切片，加生抽、黑胡椒、淀粉抓匀腌 10 分钟。", "番茄切块，洋葱切丝。", "番茄炒出少量汁后加入牛肉快炒收浓。"],
+    calories: 410,
+    time: 20,
+    tags: ["protein", "lowOil", "microwave", "overnight"],
+    shoppingTips: "番茄选熟度适中的，带饭版要把汤汁收浓一点。",
+    substitutions: ["番茄可换彩椒", "牛肉可换鸡腿肉"],
+  },
+  {
+    id: "pork-pepper",
+    name: "青椒猪里脊",
+    type: "meat",
+    icon: "pork",
+    mainIngredient: "猪里脊",
+    ingredients: ["猪里脊", "青椒", "姜"],
+    seasonings: ["生抽", "料酒", "盐", "淀粉"],
+    steps: ["猪里脊切片，加料酒、生抽、淀粉抓匀腌 8 分钟。", "青椒切块。", "少油先炒肉片至变色，再加青椒快速翻炒。"],
+    calories: 360,
+    time: 16,
+    tags: ["protein", "lowOil", "microwave", "overnight", "beginner"],
+    shoppingTips: "猪里脊选颜色粉红、纹理细的，适合快炒带饭。",
+    substitutions: ["青椒可换彩椒", "猪里脊可换鸡胸肉"],
+  },
+  {
+    id: "pork-potato",
+    name: "土豆肉片",
+    type: "meat",
+    icon: "potato",
+    mainIngredient: "猪里脊",
+    ingredients: ["猪里脊", "土豆", "青椒"],
+    seasonings: ["生抽", "盐", "淀粉"],
+    steps: ["土豆切薄片泡水后沥干。", "猪里脊切片，加生抽和淀粉抓匀腌 8 分钟。", "少油先炒肉片，再下土豆片炒熟收干。"],
+    calories: 440,
+    time: 22,
+    tags: ["protein", "microwave", "overnight", "filling"],
+    shoppingTips: "土豆不要选发芽或发青的，带饭版切薄更容易熟。",
+    substitutions: ["土豆可换山药", "青椒可省略"],
+  },
+  {
+    id: "fish-cod-broccoli",
+    name: "鳕鱼西兰花",
+    type: "meat",
+    icon: "fish",
+    mainIngredient: "鳕鱼",
+    ingredients: ["鳕鱼", "西兰花", "蒜"],
+    seasonings: ["盐", "黑胡椒", "料酒"],
+    steps: ["鳕鱼擦干切块，加盐和料酒。", "西兰花焯水。", "少油煎鳕鱼，再加西兰花轻轻翻匀。"],
+    calories: 310,
+    time: 16,
+    tags: ["protein", "lowCal", "lowOil", "microwave", "beginner"],
+    shoppingTips: "冷冻鳕鱼选冰衣薄、肉色自然的，解冻后擦干再煎。",
+    substitutions: ["鳕鱼可换巴沙鱼", "西兰花可换芦笋"],
+  },
+  {
+    id: "shrimp-broccoli",
+    name: "西兰花虾仁",
+    type: "meat",
+    icon: "shrimp",
+    mainIngredient: "虾仁",
+    ingredients: ["虾仁", "西兰花", "胡萝卜"],
+    seasonings: ["盐", "白胡椒", "料酒"],
+    steps: ["虾仁加盐、白胡椒和料酒抓匀腌 5 分钟。", "西兰花和胡萝卜焯水后沥干。", "虾仁炒变色后加入蔬菜翻匀。"],
+    calories: 300,
+    time: 14,
+    tags: ["quick", "protein", "lowCal", "lowOil", "beginner"],
+    shoppingTips: "虾仁选个体完整、腥味轻的，适合低卡饭盒。",
+    substitutions: ["虾仁可换鸡胸肉", "西兰花可换荷兰豆"],
+  },
+  {
+    id: "egg-chive",
+    name: "韭菜炒蛋",
+    type: "egg",
+    icon: "egg",
+    mainIngredient: "鸡蛋",
+    ingredients: ["鸡蛋", "韭菜"],
+    seasonings: ["盐"],
+    steps: ["鸡蛋打散。", "韭菜切段。", "先炒蛋，再下韭菜快速翻匀。"],
+    calories: 280,
+    time: 8,
+    tags: ["quick", "protein", "lowCal", "beginner"],
+    shoppingTips: "韭菜选叶片挺、根部不烂的，带饭要炒干一点。",
+    substitutions: ["韭菜可换蒜黄", "鸡蛋可加一个蛋清"],
+  },
+  {
+    id: "egg-cucumber",
+    name: "黄瓜炒蛋",
+    type: "egg",
+    icon: "egg",
+    mainIngredient: "鸡蛋",
+    ingredients: ["鸡蛋", "黄瓜", "木耳"],
+    seasonings: ["盐", "生抽"],
+    steps: ["鸡蛋先炒定型盛出。", "黄瓜切片，木耳焯水。", "下黄瓜木耳快炒后倒回鸡蛋。"],
+    calories: 290,
+    time: 12,
+    tags: ["quick", "lowCal", "lowOil", "beginner"],
+    shoppingTips: "木耳提前泡发并焯水，带饭更安心。",
+    substitutions: ["黄瓜可换西葫芦", "木耳可省略"],
+  },
+  {
+    id: "egg-spinach",
+    name: "菠菜炒蛋",
+    type: "egg",
+    icon: "egg",
+    mainIngredient: "鸡蛋",
+    ingredients: ["鸡蛋", "菠菜", "蒜"],
+    seasonings: ["盐"],
+    steps: ["菠菜焯水挤干。", "鸡蛋先炒定型。", "蒜末爆香后加菠菜和鸡蛋翻匀。"],
+    calories: 270,
+    time: 12,
+    tags: ["quick", "lowCal", "lowOil", "beginner"],
+    shoppingTips: "菠菜焯水后挤干，第二天不容易出水。",
+    substitutions: ["菠菜可换小白菜", "蒜可省略"],
+  },
+  {
+    id: "tofu-broccoli",
+    name: "西兰花豆腐",
+    type: "tofu",
+    icon: "tofu",
+    mainIngredient: "豆腐",
+    ingredients: ["北豆腐", "西兰花", "蒜"],
+    seasonings: ["生抽", "盐", "淀粉"],
+    steps: ["豆腐切块煎到两面微黄。", "西兰花焯水。", "蒜末爆香后加豆腐和西兰花，薄芡收汁。"],
+    calories: 310,
+    time: 18,
+    tags: ["protein", "lowOil", "microwave", "overnight", "beginner"],
+    shoppingTips: "北豆腐比嫩豆腐更适合带饭，不容易碎。",
+    substitutions: ["北豆腐可换老豆腐", "西兰花可换口蘑"],
+  },
+  {
+    id: "tofu-mushroom",
+    name: "香菇豆腐",
+    type: "tofu",
+    icon: "tofu",
+    mainIngredient: "豆腐",
+    ingredients: ["北豆腐", "香菇", "胡萝卜"],
+    seasonings: ["生抽", "盐", "淀粉"],
+    steps: ["豆腐煎定型。", "香菇和胡萝卜切片。", "一起烧 3 分钟后收汁。"],
+    calories: 320,
+    time: 20,
+    tags: ["protein", "lowOil", "microwave", "overnight", "filling"],
+    shoppingTips: "香菇选菌盖厚实、闻起来清香的。",
+    substitutions: ["香菇可换口蘑", "胡萝卜可换青椒"],
+  },
+  {
+    id: "tofu-skin-pepper",
+    name: "青椒豆皮",
+    type: "tofu",
+    icon: "tofuDry",
+    mainIngredient: "豆皮",
+    ingredients: ["豆皮", "青椒", "胡萝卜"],
+    seasonings: ["生抽", "盐", "五香粉"],
+    steps: ["豆皮切条焯水。", "青椒和胡萝卜切丝。", "少油翻炒到水分收干。"],
+    calories: 290,
+    time: 14,
+    tags: ["quick", "protein", "lowOil", "overnight", "beginner"],
+    shoppingTips: "豆皮买回来尽量当天做，带饭前炒干更好吃。",
+    substitutions: ["豆皮可换香干", "青椒可换芹菜"],
+  },
+  {
+    id: "tofu-dry-leek",
+    name: "韭黄炒香干",
+    type: "tofu",
+    icon: "tofuDry",
+    mainIngredient: "香干",
+    ingredients: ["香干", "韭黄", "胡萝卜"],
+    seasonings: ["生抽", "盐"],
+    steps: ["香干切条。", "韭黄切段，胡萝卜切丝。", "先炒香干，再下蔬菜快速翻匀。"],
+    calories: 280,
+    time: 12,
+    tags: ["quick", "protein", "lowOil", "overnight", "beginner"],
+    shoppingTips: "香干选包装完整、豆香干净的。",
+    substitutions: ["韭黄可换芹菜", "胡萝卜可省略"],
+  },
+  {
+    id: "mushroom-carrot",
+    name: "口蘑胡萝卜",
+    type: "veg",
+    icon: "mushroom",
+    mainIngredient: "口蘑",
+    ingredients: ["口蘑", "胡萝卜", "蒜"],
+    seasonings: ["盐", "黑胡椒"],
+    steps: ["口蘑切片，胡萝卜切片。", "蒜末爆香。", "先炒胡萝卜，再加口蘑炒到收汁。"],
+    calories: 120,
+    time: 12,
+    tags: ["quick", "lowCal", "lowOil", "microwave", "beginner"],
+    shoppingTips: "口蘑炒到收汁，第二天不容易水塌。",
+    substitutions: ["口蘑可换香菇", "胡萝卜可换彩椒"],
+  },
+  {
+    id: "broccoli-carrot",
+    name: "西兰花胡萝卜",
+    type: "veg",
+    icon: "leafy",
+    mainIngredient: "西兰花",
+    ingredients: ["西兰花", "胡萝卜", "蒜"],
+    seasonings: ["盐", "生抽"],
+    steps: ["西兰花和胡萝卜焯水。", "蒜末爆香。", "下蔬菜快速翻匀。"],
+    calories: 130,
+    time: 10,
+    tags: ["quick", "lowCal", "lowOil", "microwave", "overnight", "beginner"],
+    shoppingTips: "西兰花焯水后沥干再炒，饭盒里不积水。",
+    substitutions: ["胡萝卜可换玉米粒", "西兰花可换菜花"],
+  },
+  {
+    id: "zucchini-eggless",
+    name: "清炒西葫芦",
+    type: "veg",
+    icon: "zucchini",
+    mainIngredient: "西葫芦",
+    ingredients: ["西葫芦", "胡萝卜", "蒜"],
+    seasonings: ["盐", "生抽"],
+    steps: ["西葫芦切片。", "蒜末爆香。", "大火快炒，出水前收住。"],
+    calories: 110,
+    time: 10,
+    tags: ["quick", "lowCal", "lowOil", "beginner"],
+    shoppingTips: "西葫芦选表皮光亮、拿起来沉手的，别炒太久。",
+    substitutions: ["西葫芦可换黄瓜", "胡萝卜可省略"],
+  },
+  {
+    id: "cabbage-mushroom",
+    name: "包菜香菇",
+    type: "veg",
+    icon: "cabbage",
+    mainIngredient: "包菜",
+    ingredients: ["包菜", "香菇", "蒜"],
+    seasonings: ["盐", "生抽"],
+    steps: ["包菜撕片，香菇切片。", "蒜末爆香。", "下香菇和包菜炒到断生并收干。"],
+    calories: 140,
+    time: 12,
+    tags: ["quick", "lowCal", "lowOil", "overnight", "beginner"],
+    shoppingTips: "包菜耐放，适合一周买一次分几顿用。",
+    substitutions: ["香菇可换口蘑", "包菜可换娃娃菜"],
+  },
+  {
+    id: "yam-carrot",
+    name: "山药胡萝卜",
+    type: "veg",
+    icon: "root",
+    mainIngredient: "山药",
+    ingredients: ["山药", "胡萝卜", "木耳"],
+    seasonings: ["盐", "白醋"],
+    steps: ["山药和胡萝卜切片。", "木耳泡发焯水。", "大火快炒，出锅前加少量白醋。"],
+    calories: 180,
+    time: 16,
+    tags: ["lowOil", "overnight", "beginner", "filling"],
+    shoppingTips: "山药选表皮完整、切口新鲜的，处理时可戴手套。",
+    substitutions: ["山药可换莲藕", "木耳可省略"],
+  },
+  {
+    id: "potato-shredded",
+    name: "青椒土豆丝",
+    type: "veg",
+    icon: "potato",
+    mainIngredient: "土豆",
+    ingredients: ["土豆", "青椒", "蒜"],
+    seasonings: ["盐", "米醋"],
+    steps: ["土豆切丝冲掉淀粉。", "蒜末爆香。", "大火快炒土豆丝和青椒，保持脆感。"],
+    calories: 210,
+    time: 15,
+    tags: ["quick", "lowOil", "overnight", "beginner", "filling"],
+    shoppingTips: "土豆丝冲水后沥干，带饭时口感更清爽。",
+    substitutions: ["青椒可换胡萝卜", "米醋可换白醋"],
+  },
+  {
+    id: "pumpkin-steamed",
+    name: "清蒸南瓜",
+    type: "staple",
+    icon: "root",
+    mainIngredient: "南瓜",
+    ingredients: ["南瓜"],
+    seasonings: ["盐"],
+    steps: ["南瓜切块。", "蒸 12-15 分钟。", "按口味撒一点盐或黑胡椒。"],
+    calories: 180,
+    time: 15,
+    tags: ["lowOil", "microwave", "overnight", "beginner", "filling"],
+    shoppingTips: "南瓜切块冷藏可分两顿用，适合替代部分主食。",
+    substitutions: ["南瓜可换红薯", "也可不加盐"],
+  },
+  {
+    id: "rice-egg-veggie",
+    name: "蛋蔬炒饭",
+    type: "staple",
+    icon: "rice",
+    mainIngredient: "米饭",
+    ingredients: ["米饭", "鸡蛋", "胡萝卜", "玉米粒", "青豆"],
+    seasonings: ["盐", "生抽"],
+    steps: ["鸡蛋炒散盛出。", "杂蔬炒香。", "加入米饭和鸡蛋炒散收干。"],
+    calories: 520,
+    time: 15,
+    tags: ["quick", "microwave", "overnight", "beginner", "filling"],
+    shoppingTips: "隔夜米饭更容易炒散，杂蔬可用冷冻小包装。",
+    substitutions: ["米饭可换糙米饭", "青豆可省略"],
+  },
+  {
+    id: "brown-rice-chicken",
+    name: "鸡肉糙米饭",
+    type: "staple",
+    icon: "rice",
+    mainIngredient: "糙米饭",
+    ingredients: ["糙米饭", "鸡胸肉", "西兰花", "胡萝卜"],
+    seasonings: ["盐", "黑胡椒", "生抽"],
+    steps: ["鸡胸肉切丁煎熟。", "西兰花和胡萝卜焯水。", "和糙米饭装盒，调味拌匀。"],
+    calories: 560,
+    time: 22,
+    tags: ["protein", "lowOil", "microwave", "overnight", "filling"],
+    shoppingTips: "糙米饭可提前多煮分装冷藏，适合工作日复用。",
+    substitutions: ["糙米饭可换米饭", "鸡胸肉可换虾仁"],
+  },
+  {
+    id: "pepper-chicken",
+    name: "彩椒鸡胸肉",
+    type: "meat",
+    icon: "pepper",
+    tier: "core",
+    mainIngredient: "鸡胸肉",
+    ingredients: ["鸡胸肉", "彩椒", "洋葱"],
+    seasonings: ["生抽", "黑胡椒", "盐", "淀粉"],
+    steps: ["鸡胸肉切片，加生抽、黑胡椒、淀粉抓匀腌 8 分钟。", "彩椒和洋葱切条。", "少油先炒鸡胸肉至变色，再下彩椒洋葱快炒收干。"],
+    calories: 360,
+    time: 16,
+    tags: ["protein", "lowOil", "microwave", "overnight", "beginner"],
+    shoppingTips: "彩椒选表皮光亮、蒂部新鲜的；鸡胸肉选颜色粉嫩、表面不黏手的。",
+    substitutions: ["彩椒可换青椒", "鸡胸肉可换去皮鸡腿肉"],
+  },
+  {
+    id: "asparagus-shrimp",
+    name: "芦笋虾仁",
+    type: "meat",
+    icon: "shrimp",
+    tier: "core",
+    mainIngredient: "虾仁",
+    ingredients: ["虾仁", "芦笋", "胡萝卜"],
+    seasonings: ["盐", "白胡椒", "料酒"],
+    steps: ["虾仁加盐、白胡椒和料酒抓匀腌 5 分钟。", "芦笋切段，和胡萝卜片焯水 30 秒后沥干。", "少油炒虾仁至变色，加入芦笋胡萝卜快速翻匀。"],
+    calories: 290,
+    time: 14,
+    tags: ["quick", "protein", "lowCal", "lowOil", "microwave", "beginner"],
+    shoppingTips: "芦笋选根部不空心、颜色鲜绿的；冷冻虾仁选冰衣薄、个体完整的。",
+    substitutions: ["芦笋可换西兰花", "虾仁可换鸡胸肉丁"],
+  },
+  {
+    id: "tomato-tofu-beef",
+    name: "番茄豆腐牛肉末",
+    type: "tofu",
+    icon: "tofu",
+    tier: "core",
+    mainIngredient: "豆腐",
+    ingredients: ["北豆腐", "番茄", "牛肉末", "葱"],
+    seasonings: ["生抽", "盐", "黑胡椒", "淀粉"],
+    steps: ["北豆腐切块焯水，番茄切块。", "少油炒牛肉末至变色，加入番茄炒出少量汁。", "放入豆腐烧 3 分钟，勾薄芡后收浓。"],
+    calories: 380,
+    time: 18,
+    tags: ["protein", "lowOil", "microwave", "overnight", "beginner"],
+    shoppingTips: "北豆腐比嫩豆腐更适合带饭；番茄选熟而不软烂的，汤汁更容易收浓。",
+    substitutions: ["牛肉末可换鸡肉末", "北豆腐可换老豆腐"],
+  },
+  {
+    id: "beef-broccoli-mushroom",
+    name: "西兰花口蘑牛肉粒",
+    type: "meat",
+    icon: "beef",
+    tier: "core",
+    mainIngredient: "牛肉",
+    ingredients: ["牛肉", "西兰花", "口蘑"],
+    seasonings: ["生抽", "蚝油", "黑胡椒", "淀粉"],
+    steps: ["牛肉切小粒，加生抽、黑胡椒、淀粉抓匀腌 10 分钟。", "西兰花焯水，口蘑切片。", "少油快炒牛肉粒，加入口蘑和西兰花炒到水分收干。"],
+    calories: 430,
+    time: 20,
+    tags: ["protein", "lowOil", "microwave", "overnight", "filling"],
+    shoppingTips: "牛肉选纹理细、颜色鲜红的；口蘑选伞面完整、不发黏的。",
+    substitutions: ["牛肉可换鸡腿肉", "口蘑可换香菇"],
+  },
+  {
+    id: "carrot-fungus-egg",
+    name: "胡萝卜木耳炒蛋",
+    type: "egg",
+    icon: "egg",
+    tier: "core",
+    mainIngredient: "鸡蛋",
+    ingredients: ["鸡蛋", "胡萝卜", "木耳", "葱"],
+    seasonings: ["盐", "生抽"],
+    steps: ["木耳泡发后焯水，胡萝卜切片。", "鸡蛋打散，少油炒到刚定型后盛出。", "先炒胡萝卜和木耳，再倒回鸡蛋翻匀调味。"],
+    calories: 300,
+    time: 12,
+    tags: ["quick", "protein", "lowCal", "lowOil", "microwave", "overnight", "beginner"],
+    shoppingTips: "干木耳泡发后闻起来应清爽无异味，胡萝卜选表皮光滑不开裂的。",
+    substitutions: ["胡萝卜可换黄瓜", "木耳可省略"],
+  },
+  {
+    id: "chickpea-chicken-salad-rice",
+    name: "鹰嘴豆鸡胸肉饭",
+    type: "staple",
+    icon: "bean",
+    tier: "lunchbox",
+    mainIngredient: "鹰嘴豆",
+    ingredients: ["鹰嘴豆", "鸡胸肉", "糙米饭", "彩椒", "黄瓜"],
+    seasonings: ["盐", "黑胡椒", "生抽"],
+    steps: ["鸡胸肉切丁，加盐、黑胡椒和生抽腌 8 分钟后煎熟。", "鹰嘴豆沥干，彩椒切丁，黄瓜切丁。", "糙米饭打底，放入鸡胸肉和配菜，黄瓜建议单独放一侧。"],
+    calories: 560,
+    time: 18,
+    tags: ["protein", "lowOil", "overnight", "filling"],
+    shoppingTips: "鹰嘴豆可用熟制罐装款，选配料简单、钠含量较低的；黄瓜带饭前尽量沥干。",
+    substitutions: ["鹰嘴豆可换毛豆", "黄瓜可换西兰花以降低出水"],
+  },
+  {
+    id: "purple-cabbage-egg-rice",
+    name: "紫甘蓝鸡蛋炒饭",
+    type: "staple",
+    icon: "purple",
+    tier: "lunchbox",
+    mainIngredient: "米饭",
+    ingredients: ["米饭", "鸡蛋", "紫甘蓝", "胡萝卜"],
+    seasonings: ["盐", "生抽"],
+    steps: ["紫甘蓝和胡萝卜切细丝，鸡蛋炒散盛出。", "少油炒紫甘蓝和胡萝卜至断生。", "加入米饭和鸡蛋炒散收干，少量生抽调味。"],
+    calories: 500,
+    time: 15,
+    tags: ["quick", "microwave", "overnight", "beginner", "filling"],
+    shoppingTips: "紫甘蓝选叶片紧实、切口不发黑的；隔夜米饭更容易炒散。",
+    substitutions: ["米饭可换糙米饭", "紫甘蓝可换包菜"],
+  },
+  {
+    id: "bean-chicken",
+    name: "豆角鸡胸肉丁",
+    type: "meat",
+    icon: "chicken",
+    tier: "flexible",
+    mainIngredient: "鸡胸肉",
+    ingredients: ["鸡胸肉", "豆角", "胡萝卜"],
+    seasonings: ["生抽", "盐", "料酒", "淀粉"],
+    steps: ["鸡胸肉切丁，加生抽、料酒、淀粉抓匀腌 8 分钟。", "豆角切小段，沸水焯 2 分钟至颜色变深后沥干。", "少油炒鸡丁至变色，加入豆角和胡萝卜炒熟收干。"],
+    calories: 350,
+    time: 18,
+    tags: ["protein", "lowCal", "lowOil", "microwave", "overnight"],
+    shoppingTips: "豆角选颜色鲜绿、豆荚饱满但不鼓胀的；豆角必须彻底加热熟透。",
+    substitutions: ["豆角可换荷兰豆", "鸡胸肉可换猪里脊"],
+  },
+  {
+    id: "shrimp-veggie-brown-rice",
+    name: "三色虾仁糙米饭",
+    type: "staple",
+    icon: "rice",
+    tier: "lunchbox",
+    mainIngredient: "糙米饭",
+    ingredients: ["糙米饭", "虾仁", "西兰花", "玉米粒", "胡萝卜"],
+    seasonings: ["盐", "白胡椒", "生抽"],
+    steps: ["虾仁加盐、白胡椒抓匀腌 5 分钟后炒熟。", "西兰花、玉米粒和胡萝卜焯水后沥干。", "糙米饭装盒，铺上虾仁和蔬菜，少量生抽调味。"],
+    calories: 520,
+    time: 18,
+    tags: ["protein", "lowOil", "microwave", "overnight", "filling"],
+    shoppingTips: "糙米饭可提前分装；冷冻玉米粒和虾仁选冰霜少、颗粒分明的。",
+    substitutions: ["虾仁可换鸡胸肉", "糙米饭可换米饭"],
+  },
+];
+
 const DEFAULT_SETTINGS = {
   preferFavorites: false,
   randomMeatCount: 1,
   randomVegCount: 1,
 };
 
-const DEFAULT_PROFILE = {
-  userType: "office",
-  hasMicrowave: true,
-  hasFridge: true,
-  longCommute: false,
-  shortDinnerPrep: false,
-  goals: ["saveTime", "overnight"],
+const DEFAULT_MY_SECTIONS = {
+  preferences: true,
+  favorites: true,
+  blocked: false,
+  custom: false,
+  history: false,
 };
 
 const MODE_META = {
   default: { label: "省脑默认" },
-  quick: { label: "快手 20 分钟" },
-  lean: { label: "低卡高蛋白" },
+  quick: { label: "快手" },
+  lean: { label: "低卡" },
 };
 
 const INGREDIENT_CATEGORY_RULES = [
   { category: "肉蛋豆", keywords: ["鸡", "牛", "猪", "虾", "鱼", "蛋", "豆腐", "香干", "豆皮", "肉"] },
-  { category: "主食", keywords: ["米", "饭", "面", "土豆", "南瓜", "山药", "藕"] },
   { category: "调料", keywords: ["盐", "糖", "生抽", "老抽", "蚝油", "料酒", "黑胡椒", "白胡椒", "淀粉", "豆瓣酱", "花椒粉", "醋", "五香粉"] },
+  { category: "主食", keywords: ["米饭", "糙米", "面", "土豆", "南瓜", "山药", "藕"] },
 ];
 
 const state = {
   view: "random",
-  recipeFilters: { type: "all", ingredient: "all", tag: "all" },
-  diyFilters: { type: "all", ingredient: "all", tag: "all" },
+  recipeFilters: { type: "all", ingredient: "all", tag: "all", tier: "all" },
+  diyFilters: { type: "all", ingredient: "all", tag: "all", tier: "all" },
   recipeSearch: "",
   diySelected: load("diySelected", []),
   randomResults: [],
   previewResults: [],
+  diyRecommendationKey: "",
+  diyRecommendationIds: [],
   isRolling: false,
+  swappingRecipeId: "",
+  swappedRecipeId: "",
   settings: load("settings", DEFAULT_SETTINGS),
-  profile: load("profile", DEFAULT_PROFILE),
   modePreference: load("modePreference", "default"),
   mealHistory: load("mealHistory", []),
+  mySections: load("mySections", DEFAULT_MY_SECTIONS),
   shoppingChecked: load("shoppingChecked", {}),
   favorites: load("favorites", []),
   blocked: load("blocked", []),
@@ -301,9 +853,9 @@ function save(key, value) {
 function persistState() {
   normalizePreferences();
   save("settings", state.settings);
-  save("profile", state.profile);
   save("modePreference", state.modePreference);
   save("mealHistory", state.mealHistory);
+  save("mySections", state.mySections);
   save("shoppingChecked", state.shoppingChecked);
   save("favorites", state.favorites);
   save("blocked", state.blocked);
@@ -314,7 +866,7 @@ function persistState() {
 }
 
 function allRecipes() {
-  return [...BUILT_IN_RECIPES, ...state.customRecipes].map(normalizeRecipe);
+  return [...BUILT_IN_RECIPES, ...EXTRA_RECIPES, ...state.customRecipes].map(normalizeRecipe);
 }
 
 function getRecipe(id) {
@@ -327,13 +879,23 @@ function normalizeRecipe(recipe) {
   return {
     ...recipe,
     tags,
+    tier: recipe.tier || inferRecipeTier(recipe),
     lunchboxScore,
     reheatTip: recipe.reheatTip || inferReheatTip(recipe),
     overnightNote: recipe.overnightNote || inferOvernightNote(recipe),
     storageTip: recipe.storageTip || "晾到不烫手后密封冷藏，第二天吃前充分加热。",
     wateryRisk: recipe.wateryRisk || inferWateryRisk(recipe),
-    verifiedLevel: recipe.verifiedLevel || "原型内容",
+    verifiedLevel: recipe.verifiedLevel || (recipe.custom ? "自定义内容" : "已人工复核"),
   };
+}
+
+function inferRecipeTier(recipe) {
+  if (recipe.type === "staple") return "lunchbox";
+  const text = [recipe.name, recipe.mainIngredient, ...(recipe.ingredients || [])].join("");
+  if (/(黄瓜|油麦菜|青菜|菠菜|韭菜|韭黄|芹菜|西葫芦|豆角|番茄|嫩豆腐)/.test(text)) return "flexible";
+  if (recipe.tags?.includes("overnight") && recipe.tags?.includes("protein")) return "core";
+  if (recipe.tags?.includes("lowOil") && recipe.tags?.includes("beginner") && inferWateryRisk(recipe) === "低") return "core";
+  return "flexible";
 }
 
 function inferHealthTags(recipe) {
@@ -380,6 +942,10 @@ function typeMeta(type) {
   return TYPE_META[type] || { label: "其他", icon: "□" };
 }
 
+function tierMeta(tier) {
+  return TIER_META[tier] || TIER_META.flexible;
+}
+
 function iconMeta(iconId) {
   return ICON_LIBRARY.find((icon) => icon.id === iconId) || ICON_LIBRARY[0];
 }
@@ -392,13 +958,18 @@ function ingredientGroupIds(recipe) {
 }
 
 function fallbackIconId(recipe) {
+  const searchable = [recipe.name, recipe.mainIngredient, ...(recipe.ingredients || [])].join("");
   const groupIds = ingredientGroupIds(recipe);
   if (groupIds.includes("chicken")) return "chicken";
   if (groupIds.includes("beef")) return "beef";
   if (groupIds.includes("pork")) return "pork";
-  if (groupIds.includes("fishShrimp")) return "fish";
+  if (/虾/.test(searchable)) return "shrimp";
+  if (/鱼|鳕/.test(searchable)) return "fish";
   if (groupIds.includes("egg")) return "egg";
+  if (/香干|豆皮/.test(searchable)) return "tofuDry";
   if (groupIds.includes("tofu")) return "tofu";
+  if (/西葫芦/.test(searchable)) return "zucchini";
+  if (/土豆/.test(searchable)) return "potato";
   if (groupIds.includes("mushroom")) return "mushroom";
   if (groupIds.includes("leafy")) return "leafy";
   if (groupIds.includes("root")) return "root";
@@ -428,12 +999,10 @@ function isBlocked(id) {
 function normalizePreferences() {
   const favoriteSet = new Set(state.favorites);
   state.blocked = state.blocked.filter((id) => !favoriteSet.has(id));
-  state.profile = {
-    ...DEFAULT_PROFILE,
-    ...(state.profile || {}),
-    goals: Array.isArray(state.profile?.goals) ? state.profile.goals : DEFAULT_PROFILE.goals,
-  };
   if (!MODE_META[state.modePreference]) state.modePreference = "default";
+  state.mySections = { ...DEFAULT_MY_SECTIONS, ...(state.mySections || {}) };
+  state.recipeFilters = { type: "all", ingredient: "all", tag: "all", tier: "all", ...(state.recipeFilters || {}) };
+  state.diyFilters = { type: "all", ingredient: "all", tag: "all", tier: "all", ...(state.diyFilters || {}) };
 }
 
 function weekStart(date = new Date()) {
@@ -484,10 +1053,8 @@ function lunchboxReasonText(recipes) {
     ? "蛋白质和蔬菜都有"
     : stats.proteinCount ? "蛋白质够了，蔬菜可以再补一道" : "蔬菜有了，加道蛋白质会更顶饱";
   const overnight = `${stats.overnightCount} 道适合隔夜`;
-  const microwave = state.profile.hasMicrowave
-    ? `${stats.microwaveCount} 道微波炉友好`
-    : "已按无微波炉场景降低复热依赖";
-  return `${balance}，约 ${stats.time || "--"} 分钟，${overnight}，${microwave}。`;
+  const reuse = ingredientReuseText(recipes);
+  return `${balance}，约 ${stats.time || "--"} 分钟，${overnight}。${reuse}`;
 }
 
 function lunchboxHealthText(recipes) {
@@ -497,15 +1064,49 @@ function lunchboxHealthText(recipes) {
   parts.push(stats.proteinCount ? "有蛋白质" : "缺蛋白质");
   parts.push(stats.vegCount ? "有蔬菜" : "缺蔬菜");
   if (stats.lowOilCount >= Math.max(1, recipes.length - 1)) parts.push("整体少油");
-  if (state.profile.userType === "lean" || state.profile.goals.includes("lowCal")) {
-    parts.push(stats.lowCalCount ? "适合控卡" : "控卡时注意份量");
-  }
+  parts.push(stats.lowCalCount ? "适合控卡" : "控卡时注意份量");
   return parts.join(" · ");
 }
 
 function thisWeekMeals() {
   const start = weekStart().getTime();
   return state.mealHistory.filter((meal) => new Date(meal.date).getTime() >= start);
+}
+
+function mainIngredients(recipes) {
+  return recipes.map((recipe) => recipe.mainIngredient).filter(Boolean);
+}
+
+function sharedMainIngredientCount(recipe, contextRecipes) {
+  const context = new Set(mainIngredients(contextRecipes));
+  if (!context.size || !recipe.mainIngredient) return 0;
+  return context.has(recipe.mainIngredient) ? 1 : 0;
+}
+
+function uniqueIngredientCount(recipes) {
+  return new Set(recipes.flatMap((recipe) => recipe.ingredients || [])).size;
+}
+
+function ingredientReuseText(recipes) {
+  const mains = mainIngredients(recipes);
+  const repeated = mains.filter((item, index) => mains.indexOf(item) !== index);
+  if (repeated.length) return `${[...new Set(repeated)].join("、")}可以复用，买菜更省心。`;
+  const count = uniqueIngredientCount(recipes);
+  if (count <= recipes.length * 2) return "主食材不多，适合工作日顺手买。";
+  return "这盒食材稍多，适合顺路买菜或周末备菜。";
+}
+
+function localFeedbackText() {
+  const weekMeals = thisWeekMeals();
+  if (!weekMeals.length) return "确认带饭后，会帮你记下本周少点了几次外卖。";
+  const recentRecipes = weekMeals.flatMap((meal) => meal.recipeIds || []).map(getRecipe).filter(Boolean);
+  const counts = recentRecipes.reduce((map, recipe) => {
+    const key = recipe.mainIngredient || typeMeta(recipe.type).label;
+    map[key] = (map[key] || 0) + 1;
+    return map;
+  }, {});
+  const top = Object.entries(counts).sort((a, b) => b[1] - a[1])[0]?.[0];
+  return `本周已安排 ${weekMeals.length} 顿，少点了 ${weekMeals.length} 次外卖${top ? `，常用食材是 ${top}` : ""}。`;
 }
 
 function mealKey(recipes = state.randomResults) {
@@ -528,6 +1129,13 @@ function shoppingItems(recipes) {
   });
   const order = ["肉蛋豆", "蔬菜", "主食", "调料"];
   return [...items.values()].sort((a, b) => order.indexOf(a.category) - order.indexOf(b.category) || a.name.localeCompare(b.name, "zh-CN"));
+}
+
+function shoppingComplexityText(recipes) {
+  const itemCount = shoppingItems(recipes).filter((item) => item.category !== "调料").length;
+  if (itemCount <= 4) return `本盒主食材 ${itemCount} 类，买菜很轻。`;
+  if (itemCount <= 6) return `本盒主食材 ${itemCount} 类，适合顺手补齐。`;
+  return `本盒主食材 ${itemCount} 类，建议和本周其他饭盒一起买。`;
 }
 
 function groupedShoppingItems(recipes) {
@@ -575,11 +1183,12 @@ function renderShoppingPanel(recipes) {
   panel.innerHTML = `
     <div class="section-head compact">
       <div>
-        <p class="eyebrow">买菜闭环</p>
-        <h3>这盒要买什么</h3>
+        <p class="eyebrow">买菜清单</p>
+        <h3>照着买就行</h3>
       </div>
-      <button class="ghost-button" data-copy-shopping type="button">复制</button>
+      <button class="ghost-button" data-copy-shopping type="button">复制清单</button>
     </div>
+    <p class="shopping-summary">${escapeHtml(shoppingComplexityText(recipes))} ${escapeHtml(ingredientReuseText(recipes))}</p>
     ${sections}
   `;
 }
@@ -595,7 +1204,7 @@ function mealCardHtml(meal, options = {}) {
       <div>
         <p class="meal-date">${label}</p>
         <h4>${escapeHtml(names)}</h4>
-        <p>${meal.calories || "--"} kcal · ${meal.time || "--"} 分钟</p>
+        <p>约 ${meal.calories || "--"} kcal · ${meal.time || "--"} 分钟</p>
       </div>
       ${actions}
     </article>
@@ -655,6 +1264,51 @@ function preferenceIcon(kind, active) {
   `;
 }
 
+function lunchboxDishRow(recipe) {
+  const meta = typeMeta(recipe.type);
+  const tags = (recipe.tags || []).slice(0, 2);
+  const isSwapping = state.swappingRecipeId === recipe.id;
+  const isSwapped = state.swappedRecipeId === recipe.id;
+  if (isSwapping) {
+    return `
+      <article class="lunchbox-dish-row is-swapping">
+        <div class="dish-swap-panel">
+          <div class="dish-swap-icon">${recipeIcon(recipe)}</div>
+          <div>
+            <h3>正在换这道</h3>
+            <p>给这一格重新配个口味</p>
+          </div>
+        </div>
+      </article>
+    `;
+  }
+  return `
+    <article class="lunchbox-dish-row${isSwapping ? " is-swapping" : ""}${isSwapped ? " is-swapped" : ""}">
+      ${isSwapped ? `<span class="swap-done-badge">已换好</span>` : ""}
+      <div class="lunchbox-dish-main">
+        <div class="food-mark ${recipe.type}">${recipeIcon(recipe)}</div>
+        <div class="recipe-main">
+          <div class="recipe-topline">
+            <h3 class="recipe-name">${escapeHtml(recipe.name)}</h3>
+            <span class="recipe-type">${meta.label}</span>
+          </div>
+          <div class="mini-meta">
+            <span>${recipe.time || "--"} 分钟</span>
+            <span>约 ${recipe.calories || "--"} kcal</span>
+          </div>
+          <div class="tag-list">
+            ${tags.map((tag) => `<span class="tag">${tagMeta(tag).icon} ${tagMeta(tag).label}</span>`).join("")}
+          </div>
+        </div>
+      </div>
+      <div class="lunchbox-dish-actions">
+        <button class="action-button good" data-swap-random="${recipe.id}" type="button" ${isSwapping ? "disabled" : ""}>${isSwapping ? "换菜中" : "换这道"}</button>
+        <button class="action-button" data-detail="${recipe.id}" type="button" ${isSwapping ? "disabled" : ""}>详情</button>
+      </div>
+    </article>
+  `;
+}
+
 function recipeCard(recipe, options = {}) {
   const compact = options.compact ? " compact" : "";
   const meta = typeMeta(recipe.type);
@@ -668,11 +1322,14 @@ function recipeCard(recipe, options = {}) {
       <div class="recipe-main">
         <div class="recipe-topline">
           <h3 class="recipe-name">${escapeHtml(recipe.name)}</h3>
-          <span class="recipe-type">${meta.label}</span>
+          <div class="recipe-badges">
+            <span class="recipe-type">${meta.label}</span>
+            <span class="recipe-tier ${recipe.tier}">${tierMeta(recipe.tier).label}</span>
+          </div>
         </div>
         <div class="mini-meta">
           <span>${recipe.time || "--"} 分钟</span>
-          <span>${recipe.calories || "--"} kcal</span>
+          <span>约 ${recipe.calories || "--"} kcal</span>
         </div>
         <div class="tag-list">
           ${tags.map((tag) => `<span class="tag">${tagMeta(tag).icon} ${tagMeta(tag).label}</span>`).join("")}
@@ -706,15 +1363,16 @@ function escapeHtml(text) {
 
 function renderRandom() {
   const { randomMeatCount, randomVegCount } = state.settings;
-  const mode = MODE_META[state.modePreference] || MODE_META.default;
   const weekCount = thisWeekMeals().length;
-  $("#randomSummary").textContent = `${mode.label} · ${randomMeatCount} 蛋白 ${randomVegCount} 蔬菜 · 本周已安排 ${weekCount} 顿`;
+  $("#randomSummary").textContent = `${randomMeatCount} 蛋白 ${randomVegCount} 蔬菜 · 本周已安排 ${weekCount} 顿`;
   $$(".mode-chip").forEach((button) => button.classList.toggle("active", button.dataset.mode === state.modePreference));
   $$(".preset-chip").forEach((button) => {
     const active = Number(button.dataset.presetMeat) === randomMeatCount && Number(button.dataset.presetVeg) === randomVegCount;
     button.classList.toggle("active", active);
   });
   const visibleResults = state.isRolling ? state.previewResults : state.randomResults;
+  const hasSettledResults = !state.isRolling && Boolean(state.randomResults.length);
+  $(".random-hero").hidden = state.isRolling;
   renderLunchboxPanel(visibleResults);
   renderShoppingPanel(visibleResults);
   renderWeekHistoryPanel();
@@ -727,11 +1385,11 @@ function renderRandom() {
       </div>
     `).join("")
     : "";
-  $("#randomResults").classList.toggle("hidden-while-drawing", state.isRolling);
-  $("#randomResults").classList.toggle("random-settled", !state.isRolling && Boolean(state.randomResults.length));
-  $("#randomResults").innerHTML = state.isRolling ? "" : visibleResults.map((recipe) => recipeCard(recipe, { showSwap: true })).join("");
+  $("#randomResults").classList.toggle("hidden-while-drawing", true);
+  $("#randomResults").innerHTML = "";
+  $("#randomRecipeHead").hidden = true;
   $("#randomizeBtn").disabled = state.isRolling;
-  $("#randomizeBtn span").textContent = state.isRolling ? "配饭中" : "生成明日饭盒";
+  $("#randomizeBtn span").textContent = state.isRolling ? "配饭中" : hasSettledResults ? "重新生成明日饭盒" : "生成明日饭盒";
   $("#randomHint").textContent = visibleResults.length ? "" : "先抽一盒，今晚少纠结五分钟。";
 }
 
@@ -743,26 +1401,35 @@ function renderLunchboxPanel(recipes) {
     return;
   }
   const stats = lunchboxStats(recipes);
+  const metrics = [
+    `${recipes.length} 道菜`,
+    `约 ${stats.calories || "--"} kcal`,
+    `${stats.time || "--"} 分钟`,
+    `${stats.overnightCount}/${recipes.length} 隔夜友好`,
+  ];
   panel.hidden = false;
   panel.innerHTML = `
     <div class="lunchbox-title-row">
       <div>
-        <p class="eyebrow">饭盒方案</p>
+        <p class="eyebrow">明天带这盒</p>
         <h3>${escapeHtml(lunchboxMoodText(recipes))}</h3>
       </div>
       <span class="score-badge">${stats.score || "--"}/5 带饭适配</span>
     </div>
-    <p class="lunchbox-reason">${escapeHtml(lunchboxReasonText(recipes))}</p>
-    <div class="metric-grid">
-      <div><strong>${recipes.length}</strong><span>道菜</span></div>
-      <div><strong>${stats.calories || "--"}</strong><span>约 kcal</span></div>
-      <div><strong>${stats.time || "--"}</strong><span>约分钟</span></div>
-      <div><strong>${stats.overnightCount}/${recipes.length}</strong><span>隔夜友好</span></div>
-    </div>
+    <div class="metric-line">${metrics.map((item) => `<span>${escapeHtml(item)}</span>`).join("")}</div>
     <div class="health-line">${escapeHtml(lunchboxHealthText(recipes))}</div>
+    <div class="lunchbox-recipes">
+      <div class="recipe-section-head embedded">
+        <p class="eyebrow">饭盒里的菜</p>
+        <h3>${recipes.length > 1 ? `具体就吃这 ${recipes.length} 道` : "具体就吃这道"}</h3>
+      </div>
+      <div class="recipe-grid lunchbox-recipe-grid">
+        ${recipes.map(lunchboxDishRow).join("")}
+      </div>
+    </div>
     <div class="lunchbox-actions">
-      <button class="primary-button" data-confirm-meal type="button">今天就带这盒</button>
-      <button class="ghost-button" data-copy-shopping type="button">复制购物清单</button>
+      <button class="primary-button" data-confirm-meal type="button">确认带这盒</button>
+      <button class="ghost-button" data-reroll-meal type="button">换一盒</button>
     </div>
   `;
 }
@@ -776,7 +1443,7 @@ function weightedPick(candidates, count, chosen = [], options = {}) {
   }
   while (picked.length < count && pool.length) {
     const weighted = pool.flatMap((recipe) => {
-      let weight = recipeWeight(recipe);
+      let weight = recipeWeight(recipe, options.contextRecipes || []);
       if (state.settings.preferFavorites && isFavorite(recipe.id)) weight += 7;
       if (chosen.includes(recipe.id)) weight = 0;
       return Array(Math.max(1, weight)).fill(recipe);
@@ -788,37 +1455,29 @@ function weightedPick(candidates, count, chosen = [], options = {}) {
   return picked;
 }
 
-function recipeWeight(recipe) {
+function recipeWeight(recipe, contextRecipes = []) {
   let weight = 6;
   const tags = recipe.tags || [];
   const recentMeals = recentMealIds(7);
   if (isFavorite(recipe.id)) weight += 3;
   if (state.recent.includes(recipe.id)) weight -= 2;
   if (recentMeals.has(recipe.id)) weight -= 4;
-  if (tags.includes("overnight")) weight += 2;
-  if (tags.includes("microwave") && state.profile.hasMicrowave) weight += 2;
-  if (tags.includes("microwave") && !state.profile.hasMicrowave) weight -= 2;
-  if (state.profile.longCommute) {
-    if (tags.includes("overnight")) weight += 3;
-    if (recipe.wateryRisk === "高") weight -= 3;
-    if (recipe.wateryRisk === "低") weight += 1;
-  }
-  if (state.profile.shortDinnerPrep || state.profile.goals.includes("saveTime")) {
-    if ((Number(recipe.time) || 99) <= 15) weight += 3;
-    if (tags.includes("quick")) weight += 2;
-  }
-  if (state.profile.userType === "beginner") {
-    if (tags.includes("beginner")) weight += 4;
-    if ((recipe.steps || []).length <= 3) weight += 1;
-  }
-  if (state.profile.userType === "lean" || state.profile.goals.includes("lowCal")) {
-    if (tags.includes("lowCal")) weight += 4;
-    if (tags.includes("lowOil")) weight += 2;
-    if (Number(recipe.calories) > 430) weight -= 3;
-  }
-  if (state.profile.goals.includes("protein") && tags.includes("protein")) weight += 3;
-  if (state.profile.goals.includes("lowOil") && tags.includes("lowOil")) weight += 3;
-  if (state.profile.goals.includes("overnight") && tags.includes("overnight")) weight += 3;
+  if (tags.includes("quick")) weight += 3;
+  if (tags.includes("lowCal")) weight += 4;
+  if (tags.includes("lowOil")) weight += 4;
+  if (tags.includes("protein")) weight += 3;
+  if (tags.includes("overnight")) weight += 3;
+  if (tags.includes("microwave")) weight += 2;
+  if (tags.includes("beginner")) weight += 1;
+  if (recipe.tier === "core") weight += 5;
+  if (recipe.tier === "flexible") weight -= 1;
+  if (recipe.tier === "lunchbox") weight -= contextRecipes.length ? 2 : 1;
+  if ((Number(recipe.time) || 99) <= 15) weight += 2;
+  if (Number(recipe.calories) > 430) weight -= 2;
+  if (sharedMainIngredientCount(recipe, contextRecipes)) weight += 4;
+  if (contextRecipes.length && uniqueIngredientCount([...contextRecipes, recipe]) <= uniqueIngredientCount(contextRecipes) + 2) weight += 2;
+  if (recipe.wateryRisk === "高") weight -= 3;
+  if (recipe.wateryRisk === "低") weight += 1;
   if (state.modePreference === "quick") {
     if ((Number(recipe.time) || 99) <= 15) weight += 5;
     if (tags.includes("quick")) weight += 3;
@@ -845,13 +1504,16 @@ function buildRandomResults(options = {}) {
   if (proteinPool.length < meatCount) proteinPool = recipes.filter((recipe) => isProteinType(recipe.type));
   if (vegPool.length < vegCount) vegPool = recipes.filter((recipe) => isVegType(recipe.type));
   const pickedMeat = weightedPick(proteinPool, meatCount, [], { avoidRecent: Boolean(options.avoidRecent) });
-  const pickedVeg = weightedPick(vegPool, vegCount, pickedMeat.map((recipe) => recipe.id), { avoidRecent: Boolean(options.avoidRecent) });
+  const pickedVeg = weightedPick(vegPool, vegCount, pickedMeat.map((recipe) => recipe.id), {
+    avoidRecent: Boolean(options.avoidRecent),
+    contextRecipes: pickedMeat,
+  });
   return [...pickedMeat, ...pickedVeg];
 }
 
 function replaceRandomRecipe(id) {
   const oldRecipe = getRecipe(id);
-  if (!oldRecipe || state.isRolling) return;
+  if (!oldRecipe || state.isRolling || state.swappingRecipeId) return;
   const usedIds = state.randomResults.map((recipe) => recipe.id).filter((recipeId) => recipeId !== id);
   const allCandidates = allRecipes()
     .filter((recipe) => recipe.id !== id)
@@ -860,15 +1522,29 @@ function replaceRandomRecipe(id) {
   let pool = allCandidates
     .filter((recipe) => !isBlocked(recipe.id))
   if (!pool.length) pool = allCandidates;
-  const replacement = weightedPick(pool, 1, usedIds, { avoidRecent: true })[0];
+  const contextRecipes = state.randomResults.filter((recipe) => recipe.id !== id);
+  const replacement = weightedPick(pool, 1, usedIds, { avoidRecent: true, contextRecipes })[0];
   if (!replacement) {
     showToast("暂时没有同类可替换菜");
     return;
   }
-  state.randomResults = state.randomResults.map((recipe) => recipe.id === id ? replacement : recipe);
-  rememberRecent([replacement.id]);
-  save("randomResultIds", state.randomResults.map((recipe) => recipe.id));
+  state.swappingRecipeId = id;
+  state.swappedRecipeId = "";
   renderRandom();
+  setTimeout(() => {
+    state.randomResults = state.randomResults.map((recipe) => recipe.id === id ? replacement : recipe);
+    state.swappingRecipeId = "";
+    state.swappedRecipeId = replacement.id;
+    rememberRecent([replacement.id]);
+    save("randomResultIds", state.randomResults.map((recipe) => recipe.id));
+    renderRandom();
+    setTimeout(() => {
+      if (state.swappedRecipeId === replacement.id) {
+        state.swappedRecipeId = "";
+        renderRandom();
+      }
+    }, 1000);
+  }, 360);
 }
 
 function finishRandomize(finalResults, expectedCount) {
@@ -881,6 +1557,9 @@ function finishRandomize(finalResults, expectedCount) {
   rememberRecent(state.randomResults.map((recipe) => recipe.id));
   save("randomResultIds", state.randomResults.map((recipe) => recipe.id));
   render();
+  if (state.view === "random" && state.randomResults.length) {
+    $("#lunchboxPanel")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
 }
 
 function randomResultsMatchSettings() {
@@ -900,6 +1579,8 @@ function randomize() {
     return;
   }
   if (state.isRolling) return;
+  state.swappingRecipeId = "";
+  state.swappedRecipeId = "";
   const finalResults = buildRandomResults({ avoidRecent: true });
   state.isRolling = true;
   state.previewResults = buildRandomResults({ avoidRecent: false });
@@ -950,12 +1631,34 @@ function renderDiy() {
 
   $("#comboSummary").textContent = selectedRecipes.length ? comboSummaryText(selectedRecipes) : "自由搭配，不限制一荤一素。";
 
-  const recommendations = getRecommendations(selectedRecipes);
+  const recommendations = stableDiyRecommendations(selectedRecipes);
   $("#recommendTitle").textContent = selectedRecipes.length
-    ? hasProtein && hasVeg ? "想更丰富可以再添一道" : hasProtein ? "来个素菜更均衡" : "加个蛋白质更顶饱"
+    ? hasProtein && hasVeg ? "想更丰富可以再添一道" : hasProtein ? "来个蔬菜更均衡" : "加个蛋白质更顶饱"
     : "先选一道喜欢的菜";
   $("#recommendations").innerHTML = recommendations.map((recipe) => recipeCard(recipe, { compact: true, showAdd: true })).join("");
   renderDiyCatalog();
+}
+
+function stableDiyRecommendations(selectedRecipes) {
+  const selectedIds = selectedRecipes.map((recipe) => recipe.id);
+  const key = selectedIds.join("|") || "empty";
+  if (state.diyRecommendationKey !== key) {
+    const recommendations = getRecommendations(selectedRecipes);
+    state.diyRecommendationKey = key;
+    state.diyRecommendationIds = recommendations.map((recipe) => recipe.id);
+    return recommendations;
+  }
+  const selectedSet = new Set(selectedIds);
+  const pinned = state.diyRecommendationIds
+    .map(getRecipe)
+    .filter((recipe) => recipe && !selectedSet.has(recipe.id));
+  if (pinned.length >= 6) return pinned.slice(0, 6);
+  const pinnedIds = pinned.map((recipe) => recipe.id);
+  const refill = getRecommendations(selectedRecipes)
+    .filter((recipe) => !pinnedIds.includes(recipe.id));
+  const recommendations = [...pinned, ...refill].slice(0, 6);
+  state.diyRecommendationIds = recommendations.map((recipe) => recipe.id);
+  return recommendations;
 }
 
 function comboSummaryText(recipes) {
@@ -964,7 +1667,7 @@ function comboSummaryText(recipes) {
   const hasVeg = recipes.some((recipe) => isVegType(recipe.type));
   const microwaveCount = recipes.filter((recipe) => recipe.tags?.includes("microwave")).length;
   const overnightCount = recipes.filter((recipe) => recipe.tags?.includes("overnight")).length;
-  const balance = hasProtein && hasVeg ? "蛋白质和蔬菜都照顾到了" : hasProtein ? "再来一道素菜会更均衡" : "加一道蛋白质菜会更顶饱";
+  const balance = hasProtein && hasVeg ? "蛋白质和蔬菜都照顾到了" : hasProtein ? "再来一道蔬菜会更均衡" : "加一道蛋白质菜会更顶饱";
   const prep = microwaveCount === recipes.length || overnightCount === recipes.length ? "整体适合带饭复热" : "带饭前留意复热口感";
   return `${recipes.length} 道菜，约 ${calories} kcal。${balance}，${prep}。`;
 }
@@ -977,14 +1680,14 @@ function getRecommendations(selectedRecipes) {
   if (hasProtein && !hasVeg) target = target.filter((recipe) => isVegType(recipe.type));
   if (!hasProtein && hasVeg) target = target.filter((recipe) => isProteinType(recipe.type));
   if (!hasProtein && !hasVeg) target = target.filter((recipe) => recipe.tags?.includes("beginner") || recipe.tags?.includes("quick"));
-  return weightedPick(target, 6, selectedIds, { avoidRecent: true });
+  return weightedPick(target, 6, selectedIds, { avoidRecent: true, contextRecipes: selectedRecipes });
 }
 
 function filterGroupsHtml(target, filters) {
   const typeItems = [
     { id: "all", label: "全部" },
-    { id: "meat", label: "荤菜" },
-    { id: "veg", label: "素菜" },
+    { id: "meat", label: "蛋白" },
+    { id: "veg", label: "蔬菜" },
     { id: "egg", label: "蛋类" },
     { id: "tofu", label: "豆制品" },
     { id: "staple", label: "主食" },
@@ -994,6 +1697,7 @@ function filterGroupsHtml(target, filters) {
     : INGREDIENT_GROUPS.filter((group) => group.types.includes(filters.type));
   const ingredientItems = [{ id: "all", label: "全部食材" }, ...availableIngredients];
   const tagItems = [{ id: "all", label: "全部场景" }, ...TAGS];
+  const tierItems = [{ id: "all", label: "全部层级" }, ...Object.entries(TIER_META).map(([id, meta]) => ({ id, label: meta.label }))];
   return `
     <div class="filter-group">
       <p class="filter-label">菜品分类</p>
@@ -1005,6 +1709,12 @@ function filterGroupsHtml(target, filters) {
       <p class="filter-label">食材分类</p>
       <div class="filters">
         ${ingredientItems.map((item) => `<button class="chip ${filters.ingredient === item.id ? "active" : ""}" data-filter-target="${target}" data-filter-kind="ingredient" data-filter-value="${item.id}" type="button">${item.label}</button>`).join("")}
+      </div>
+    </div>
+    <div class="filter-group">
+      <p class="filter-label">推荐层级</p>
+      <div class="filters">
+        ${tierItems.map((item) => `<button class="chip ${filters.tier === item.id ? "active" : ""}" data-filter-target="${target}" data-filter-kind="tier" data-filter-value="${item.id}" type="button">${item.label}</button>`).join("")}
       </div>
     </div>
     <div class="filter-group">
@@ -1020,12 +1730,13 @@ function recipeMatchesFilters(recipe, filters) {
   const typeMatches = filters.type === "all" || recipe.type === filters.type;
   const ingredientMatches = filters.ingredient === "all" || ingredientGroupIds(recipe).includes(filters.ingredient);
   const tagMatches = filters.tag === "all" || recipe.tags?.includes(filters.tag);
-  return typeMatches && ingredientMatches && tagMatches;
+  const tierMatches = !filters.tier || filters.tier === "all" || recipe.tier === filters.tier;
+  return typeMatches && ingredientMatches && tagMatches && tierMatches;
 }
 
 function recipeMatchesSearch(recipe, keyword) {
   if (!keyword) return true;
-  const text = [recipe.name, recipe.mainIngredient, ...(recipe.ingredients || []), ...(recipe.tags || [])].join(" ");
+  const text = [recipe.name, recipe.mainIngredient, tierMeta(recipe.tier).label, ...(recipe.ingredients || []), ...(recipe.tags || [])].join(" ");
   return text.includes(keyword);
 }
 
@@ -1078,20 +1789,13 @@ function renderMy() {
     : "";
   $("#customHint").textContent = state.customRecipes.length ? "" : "还没有自己添加的菜谱。";
   renderMealHistory();
+  renderMySections();
 }
 
 function renderSettings() {
   $("#preferFavorites").checked = Boolean(state.settings.preferFavorites);
   $("#randomMeatCount").value = state.settings.randomMeatCount;
   $("#randomVegCount").value = state.settings.randomVegCount;
-  $("#profileUserType").value = state.profile.userType;
-  $("#hasMicrowave").checked = Boolean(state.profile.hasMicrowave);
-  $("#hasFridge").checked = Boolean(state.profile.hasFridge);
-  $("#longCommute").checked = Boolean(state.profile.longCommute);
-  $("#shortDinnerPrep").checked = Boolean(state.profile.shortDinnerPrep);
-  $$("#profileForm input[name='goal']").forEach((input) => {
-    input.checked = state.profile.goals.includes(input.value);
-  });
 }
 
 function renderMealHistory() {
@@ -1101,6 +1805,31 @@ function renderMealHistory() {
   const meals = state.mealHistory.slice(0, 5);
   list.innerHTML = meals.map((meal) => mealCardHtml(meal, { reuse: true })).join("");
   hint.textContent = meals.length ? `本周已安排 ${thisWeekMeals().length} 顿，最近吃过会自动降低推荐权重。` : "还没有确认带饭记录。";
+}
+
+function renderMySections() {
+  $("#favoriteCount").textContent = state.favorites.length;
+  $("#blockedCount").textContent = state.blocked.length;
+  $("#customCount").textContent = state.customRecipes.length;
+  $("#mealHistoryCount").textContent = state.mealHistory.length;
+  $$(".collapsible-section").forEach((section) => {
+    const key = section.dataset.sectionKey;
+    const expanded = state.mySections[key] !== false;
+    section.classList.toggle("collapsed", !expanded);
+    section.querySelectorAll(":scope > :not(.section-toggle):not(.section-toggle-row)").forEach((child) => {
+      child.hidden = !expanded;
+    });
+  });
+}
+
+function toggleMySection(key) {
+  state.mySections = {
+    ...DEFAULT_MY_SECTIONS,
+    ...state.mySections,
+    [key]: state.mySections[key] === false,
+  };
+  save("mySections", state.mySections);
+  renderMySections();
 }
 
 function renderSearch() {
@@ -1178,7 +1907,7 @@ function confirmCurrentMeal() {
   state.mealHistory = [meal, ...state.mealHistory].slice(0, 30);
   rememberRecent(meal.recipeIds);
   save("mealHistory", state.mealHistory);
-  showToast("已记下这盒，最近会帮你避开重复");
+  showToast(`明天饭盒已定：${recipes.map((recipe) => recipe.name).join(" + ")}`);
   render();
 }
 
@@ -1223,7 +1952,7 @@ function addToDiy(id) {
   if (!state.diySelected.includes(id)) {
     state.diySelected.push(id);
     save("diySelected", state.diySelected);
-    showToast("已加入 DIY 组合");
+    showToast("已加入自选组合");
   }
   showView("diy");
 }
@@ -1237,17 +1966,7 @@ function openDetail(id) {
     <div class="detail-section">
       <h3>场景标签</h3>
       <div class="tag-list">${(recipe.tags || []).map((tag) => `<span class="tag">${tagMeta(tag).icon} ${tagMeta(tag).label}</span>`).join("") || "<p>暂无标签</p>"}</div>
-    </div>
-    <div class="detail-section">
-      <h3>带饭提示</h3>
-      <ul>
-        <li>带饭适配度：${recipe.lunchboxScore}/5</li>
-        <li>隔夜表现：${escapeHtml(recipe.overnightNote)}</li>
-        <li>复热方式：${escapeHtml(recipe.reheatTip)}</li>
-        <li>出水风险：${escapeHtml(recipe.wateryRisk)}</li>
-        <li>保存建议：${escapeHtml(recipe.storageTip)}</li>
-        <li>内容可信度：${escapeHtml(recipe.verifiedLevel)}，热量仅作估算参考。</li>
-      </ul>
+      <p class="detail-note">隔夜表现：${escapeHtml(recipe.overnightNote)} · 出水风险：${escapeHtml(recipe.wateryRisk)}</p>
     </div>
     <div class="detail-section"><h3>食材</h3><p>${(recipe.ingredients || []).map(escapeHtml).join("、")}</p></div>
     <div class="detail-section"><h3>调料</h3><p>${(recipe.seasonings || []).map(escapeHtml).join("、") || "按口味调整"}</p></div>
@@ -1271,9 +1990,25 @@ function openCustom(recipeId) {
   $("#customTime").value = recipe?.time || "";
   $("#customTips").value = recipe?.shoppingTips || "";
   $("#customExtraTags").value = (recipe?.tags || []).filter((tag) => !TAGS.some((preset) => preset.id === tag)).join(", ");
+  $("#customDialog").dataset.iconTouched = recipe?.icon ? "true" : "false";
   renderIconPicker(recipe?.icon || fallbackIconId(recipe || { type: "meat", ingredients: [] }));
   renderTagPicker(recipe?.tags || []);
   $("#customDialog").showModal();
+}
+
+function customDraftRecipe() {
+  return {
+    type: $("#customType").value || "meat",
+    name: $("#customName").value.trim(),
+    mainIngredient: parseList($("#customIngredients").value)[0] || "",
+    ingredients: parseList($("#customIngredients").value),
+  };
+}
+
+function updateCustomIconSuggestion() {
+  const dialog = $("#customDialog");
+  if (dialog.dataset.iconTouched === "true") return;
+  renderIconPicker(fallbackIconId(customDraftRecipe()));
 }
 
 function parseList(value) {
@@ -1286,12 +2021,14 @@ function saveCustomRecipe(event) {
   const selectedTags = $$("#customTagPicker input:checked").map((input) => input.value);
   const extraTags = parseList($("#customExtraTags").value);
   const selectedIcon = $("#customIconPicker input:checked")?.value || "";
+  const iconTouched = $("#customDialog").dataset.iconTouched === "true";
+  const draft = customDraftRecipe();
   const recipe = {
     id,
     custom: true,
     name: $("#customName").value.trim(),
     type: $("#customType").value,
-    icon: selectedIcon || "dish",
+    icon: iconTouched && selectedIcon ? selectedIcon : fallbackIconId(draft),
     mainIngredient: parseList($("#customIngredients").value)[0] || "",
     ingredients: parseList($("#customIngredients").value),
     seasonings: parseList($("#customSeasonings").value),
@@ -1321,6 +2058,7 @@ function deleteCustomRecipe(id) {
   state.favorites = state.favorites.filter((recipeId) => recipeId !== id);
   state.blocked = state.blocked.filter((recipeId) => recipeId !== id);
   state.diySelected = state.diySelected.filter((recipeId) => recipeId !== id);
+  state.diyRecommendationIds = state.diyRecommendationIds.filter((recipeId) => recipeId !== id);
   save("customRecipes", state.customRecipes);
   save("favorites", state.favorites);
   save("blocked", state.blocked);
@@ -1335,9 +2073,11 @@ function updateSettings() {
   if (meat + veg <= 0) {
     $("#settingsNote").textContent = "总菜数不能为 0，请至少保留 1 道。";
     $("#settingsNote").style.color = "#d85c45";
+    $("#randomMeatCount").value = state.settings.randomMeatCount;
+    $("#randomVegCount").value = state.settings.randomVegCount;
     return;
   }
-  $("#settingsNote").textContent = "默认 1 荤 1 素；总菜数不能为 0。";
+  $("#settingsNote").textContent = "默认 1 蛋白 1 蔬菜；总菜数不能为 0。";
   $("#settingsNote").style.color = "";
   state.settings = {
     preferFavorites: $("#preferFavorites").checked,
@@ -1345,19 +2085,6 @@ function updateSettings() {
     randomVegCount: veg,
   };
   save("settings", state.settings);
-  renderRandom();
-}
-
-function updateProfile() {
-  state.profile = {
-    userType: $("#profileUserType").value,
-    hasMicrowave: $("#hasMicrowave").checked,
-    hasFridge: $("#hasFridge").checked,
-    longCommute: $("#longCommute").checked,
-    shortDinnerPrep: $("#shortDinnerPrep").checked,
-    goals: $$("#profileForm input[name='goal']:checked").map((input) => input.value),
-  };
-  save("profile", state.profile);
   renderRandom();
 }
 
@@ -1412,15 +2139,6 @@ function clearMealHistory() {
   render();
 }
 
-function clearProfile() {
-  state.profile = { ...DEFAULT_PROFILE };
-  state.modePreference = "default";
-  save("profile", state.profile);
-  save("modePreference", state.modePreference);
-  showToast("偏好已恢复默认");
-  render();
-}
-
 function exportCustomRecipes() {
   const data = JSON.stringify(state.customRecipes, null, 2);
   const blob = new Blob([data], { type: "application/json" });
@@ -1470,9 +2188,9 @@ function sharedSnapshot() {
     version: 2,
     createdAt: new Date().toISOString(),
     settings: state.settings,
-    profile: state.profile,
     modePreference: state.modePreference,
     mealHistory: state.mealHistory,
+    mySections: state.mySections,
     shoppingChecked: state.shoppingChecked,
     favorites: state.favorites,
     blocked: state.blocked,
@@ -1526,11 +2244,6 @@ function applySharedSnapshot(payload) {
     randomMeatCount: meat + veg > 0 ? meat : 1,
     randomVegCount: meat + veg > 0 ? veg : 1,
   };
-  state.profile = {
-    ...DEFAULT_PROFILE,
-    ...(payload.profile || {}),
-    goals: Array.isArray(payload.profile?.goals) ? payload.profile.goals : DEFAULT_PROFILE.goals,
-  };
   state.modePreference = MODE_META[payload.modePreference] ? payload.modePreference : "default";
   state.customRecipes = validCustomRecipes(payload.customRecipes);
   state.favorites = validRecipeIds(payload.favorites);
@@ -1544,6 +2257,7 @@ function applySharedSnapshot(payload) {
         .filter((meal) => meal.id && meal.recipeIds.length)
         .slice(0, 30)
     : [];
+  state.mySections = { ...DEFAULT_MY_SECTIONS, ...(payload.mySections || {}) };
   state.shoppingChecked = payload.shoppingChecked && typeof payload.shoppingChecked === "object" ? payload.shoppingChecked : {};
   persistState();
   render();
@@ -1557,7 +2271,7 @@ function summarizeSharedSnapshot(payload) {
   const blockedCount = Array.isArray(payload?.blocked) ? payload.blocked.length : 0;
   const customCount = Array.isArray(payload?.customRecipes) ? payload.customRecipes.length : 0;
   const historyCount = Array.isArray(payload?.mealHistory) ? payload.mealHistory.length : 0;
-  return `这份共享包含 ${randomCount} 道随机结果、${diyCount} 道 DIY 已选菜、${favoriteCount} 个收藏、${blockedCount} 个不喜欢、${customCount} 道自定义菜谱、${historyCount} 条带饭记录，以及本地偏好设置。导入会覆盖当前设备上的这些本地数据。`;
+  return `这份共享包含 ${randomCount} 道随机结果、${diyCount} 道自选已选菜、${favoriteCount} 个收藏、${blockedCount} 个不喜欢、${customCount} 道自定义菜谱、${historyCount} 条带饭记录，以及本地偏好设置。导入会覆盖当前设备上的这些本地数据。`;
 }
 
 function detectSharedSnapshot() {
@@ -1595,17 +2309,23 @@ function bindEvents() {
   $("#closeDialog").addEventListener("click", () => $("#recipeDialog").close());
   $("#closeCustomDialog").addEventListener("click", () => $("#customDialog").close());
   $("#customRecipeForm").addEventListener("submit", saveCustomRecipe);
+  $("#customType").addEventListener("change", updateCustomIconSuggestion);
+  $("#customName").addEventListener("input", updateCustomIconSuggestion);
+  $("#customIngredients").addEventListener("input", updateCustomIconSuggestion);
+  $("#customIconPicker").addEventListener("change", (event) => {
+    if (event.target.closest("input[name='customIcon']")) {
+      $("#customDialog").dataset.iconTouched = "true";
+    }
+  });
   $("#recipeSearch").addEventListener("input", (event) => {
     state.recipeSearch = event.target.value.trim();
     renderRecipeList();
   });
   $("#settingsForm").addEventListener("input", updateSettings);
-  $("#profileForm").addEventListener("input", updateProfile);
   $("#shareStateBtn").addEventListener("click", createShareLink);
   $("#exportAllBtn").addEventListener("click", exportAllData);
   $("#importAllInput").addEventListener("change", importAllData);
   $("#clearHistoryBtn").addEventListener("click", clearMealHistory);
-  $("#clearProfileBtn").addEventListener("click", clearProfile);
   $("#exportBtn").addEventListener("click", exportCustomRecipes);
   $("#importInput").addEventListener("change", importCustomRecipes);
   $("#closeShareImport").addEventListener("click", () => $("#shareImportDialog").close());
@@ -1618,6 +2338,7 @@ function bindEvents() {
   document.body.addEventListener("click", (event) => {
     const target = event.target.closest("button");
     if (!target) return;
+    if (target.dataset.toggleSection) toggleMySection(target.dataset.toggleSection);
     if (target.dataset.fav) toggleFavorite(target.dataset.fav);
     if (target.dataset.block) toggleBlocked(target.dataset.block);
     if (target.dataset.detail) openDetail(target.dataset.detail);
@@ -1625,6 +2346,7 @@ function bindEvents() {
     if (target.dataset.swapRandom) replaceRandomRecipe(target.dataset.swapRandom);
     if (target.dataset.mode) setMode(target.dataset.mode);
     if (target.dataset.confirmMeal !== undefined) confirmCurrentMeal();
+    if (target.dataset.rerollMeal !== undefined) randomize();
     if (target.dataset.copyShopping !== undefined) copyShoppingList();
     if (target.dataset.reuseMeal) reuseMeal(target.dataset.reuseMeal);
     if (target.dataset.presetMeat) setRandomPreset(Number(target.dataset.presetMeat), Number(target.dataset.presetVeg));
@@ -1656,4 +2378,4 @@ renderTagPicker();
 state.diySelected = validRecipeIds(state.diySelected);
 state.randomResults = validRecipeIds(load("randomResultIds", [])).map(getRecipe).filter(Boolean);
 render();
-if (!detectSharedSnapshot()) ensureRandomResults();
+detectSharedSnapshot();
