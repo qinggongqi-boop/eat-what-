@@ -1063,6 +1063,118 @@ h3 {
   line-height: 1.5;
 }
 
+.diy-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.diy-actions .ghost-button {
+  min-height: 40px;
+}
+
+.diy-actions .ghost-button.active {
+  color: var(--green);
+  background: var(--green-soft);
+}
+
+.diy-panel {
+  display: grid;
+  gap: 10px;
+}
+
+.diy-recipe-carousel {
+  display: flex;
+  gap: 12px;
+  margin: 0 -14px;
+  padding: 2px 14px 8px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.diy-recipe-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+.diy-step-card,
+.diy-shopping-card {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface-strong);
+  box-shadow: 0 10px 30px rgba(50, 43, 30, 0.06);
+}
+
+.diy-step-card {
+  flex: 0 0 86%;
+  min-width: 0;
+  padding: 14px;
+  scroll-snap-align: start;
+}
+
+.diy-shopping-card {
+  padding: 13px;
+}
+
+.diy-card-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 13px;
+  padding-bottom: 11px;
+  border-bottom: 1px solid #f0eadc;
+}
+
+.diy-card-head .food-mark {
+  width: 42px;
+  height: 42px;
+  font-size: 22px;
+}
+
+.diy-card-head h3 {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.2;
+}
+
+.detail-line {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 8px;
+  color: #3e473e;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.detail-line strong {
+  flex: 0 0 auto;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.step-list {
+  margin: 14px 0 0;
+  padding: 12px 12px 12px 28px;
+  border-radius: var(--radius);
+  color: #263126;
+  background: #fbf8ef;
+  font-size: 15px;
+  line-height: 1.62;
+}
+
+.step-list li + li {
+  margin-top: 7px;
+}
+
+.diy-step-card .detail-note {
+  margin: 10px 0 0;
+  color: #8a8f85;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
 .empty-hint {
   margin: 14px 0 0;
   color: var(--muted);

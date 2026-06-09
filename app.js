@@ -816,6 +816,7 @@ const state = {
   diyFilters: { type: "all", ingredient: "all", tag: "all", tier: "all" },
   recipeSearch: "",
   diySelected: load("diySelected", []),
+  diyPanelMode: "",
   randomResults: [],
   previewResults: [],
   diyRecommendationKey: "",
@@ -1239,6 +1240,42 @@ function showToast(message) {
   showToast.timer = setTimeout(() => toast.classList.remove("show"), 1800);
 }
 
+let recipeDialogHistoryToken = "";
+
+function openRecipeDialog() {
+  const dialog = $("#recipeDialog");
+  if (dialog.open) return;
+  recipeDialogHistoryToken = `recipe-${Date.now()}`;
+  dialog.showModal();
+  history.pushState({ ...(history.state || {}), recipeDialog: recipeDialogHistoryToken }, "", location.href);
+}
+
+function closeRecipeDialog(options = {}) {
+  const dialog = $("#recipeDialog");
+  const token = recipeDialogHistoryToken;
+  if (dialog.open) dialog.close();
+  recipeDialogHistoryToken = "";
+  if (!options.fromPopstate && token && history.state?.recipeDialog === token) {
+    history.back();
+  }
+}
+
+function bindRecipeDialogDismiss() {
+  const dialog = $("#recipeDialog");
+  dialog.addEventListener("click", (event) => {
+    const rect = dialog.getBoundingClientRect();
+    const clickedBackdrop = event.clientX < rect.left
+      || event.clientX > rect.right
+      || event.clientY < rect.top
+      || event.clientY > rect.bottom;
+    if (clickedBackdrop) closeRecipeDialog();
+  });
+  dialog.addEventListener("cancel", (event) => {
+    event.preventDefault();
+    closeRecipeDialog();
+  });
+}
+
 function showView(view) {
   state.view = view;
   $$(".view").forEach((el) => el.classList.toggle("active", el.id === `view-${view}`));
@@ -1630,6 +1667,7 @@ function renderDiy() {
   }
 
   $("#comboSummary").textContent = selectedRecipes.length ? comboSummaryText(selectedRecipes) : "自由搭配，不限制一荤一素。";
+  renderDiyPanel(selectedRecipes);
 
   const recommendations = stableDiyRecommendations(selectedRecipes);
   $("#recommendTitle").textContent = selectedRecipes.length
@@ -1637,6 +1675,79 @@ function renderDiy() {
     : "先选一道喜欢的菜";
   $("#recommendations").innerHTML = recommendations.map((recipe) => recipeCard(recipe, { compact: true, showAdd: true })).join("");
   renderDiyCatalog();
+}
+
+function renderDiyPanel(recipes) {
+  const actions = $("#diyActions");
+  const panel = $("#diyPanel");
+  if (!actions || !panel) return;
+  if (!recipes.length) {
+    state.diyPanelMode = "";
+    actions.hidden = true;
+    panel.hidden = true;
+    panel.innerHTML = "";
+    return;
+  }
+  actions.hidden = false;
+  $$("[data-diy-panel]").forEach((button) => button.classList.toggle("active", button.dataset.diyPanel === state.diyPanelMode));
+  if (!state.diyPanelMode) {
+    panel.hidden = true;
+    panel.innerHTML = "";
+    return;
+  }
+  panel.hidden = false;
+  panel.innerHTML = state.diyPanelMode === "steps" ? diyStepsPanelHtml(recipes) : diyShoppingPanelHtml(recipes);
+}
+
+function diyStepsPanelHtml(recipes) {
+  return `
+    <div class="diy-recipe-carousel" aria-label="已选菜做法">
+      ${recipes.map((recipe, index) => `
+        <article class="diy-step-card">
+          <div class="diy-card-head">
+            <span class="food-mark ${recipe.type}">${recipeIcon(recipe)}</span>
+            <div>
+              <p class="eyebrow">${index + 1}/${recipes.length} · ${typeMeta(recipe.type).label}</p>
+              <h3>${escapeHtml(recipe.name)}</h3>
+            </div>
+          </div>
+          <div class="detail-line"><strong>食材</strong><span>${(recipe.ingredients || []).map(escapeHtml).join("、") || "按手边食材调整"}</span></div>
+          <div class="detail-line"><strong>调料</strong><span>${(recipe.seasonings || []).map(escapeHtml).join("、") || "按口味调整"}</span></div>
+          <ol class="step-list">
+            ${(recipe.steps?.length ? recipe.steps : ["暂无步骤，可以按自己的习惯做。"]).map((step) => `<li>${escapeHtml(step)}</li>`).join("")}
+          </ol>
+          <p class="detail-note">${escapeHtml(recipe.shoppingTips || recipe.reheatTip || "做完晾到不烫手后密封冷藏。")}</p>
+        </article>
+      `).join("")}
+    </div>
+  `;
+}
+
+function diyShoppingPanelHtml(recipes) {
+  const key = mealKey(recipes);
+  const checked = new Set(state.shoppingChecked[`diy:${key}`] || []);
+  const groups = groupedShoppingItems(recipes);
+  const sections = ["肉蛋豆", "蔬菜", "主食", "调料"]
+    .filter((category) => groups[category]?.length)
+    .map((category) => `
+      <div class="shopping-group">
+        <p class="filter-label">${category}</p>
+        <div class="shopping-items">
+          ${groups[category].map((item) => `
+            <label class="${checked.has(item.name) ? "checked" : ""}">
+              <input data-diy-shopping-item="${escapeHtml(item.name)}" type="checkbox" ${checked.has(item.name) ? "checked" : ""} />
+              <span>${escapeHtml(item.name)}</span>
+            </label>
+          `).join("")}
+        </div>
+      </div>
+    `).join("");
+  return `
+    <div class="diy-shopping-card">
+      <p class="shopping-summary">${escapeHtml(shoppingComplexityText(recipes))} ${escapeHtml(ingredientReuseText(recipes))}</p>
+      ${sections}
+    </div>
+  `;
 }
 
 function stableDiyRecommendations(selectedRecipes) {
@@ -1948,9 +2059,21 @@ function toggleShoppingItem(name, checked) {
   renderShoppingPanel(state.randomResults);
 }
 
+function toggleDiyShoppingItem(name, checked) {
+  const recipes = state.diySelected.map(getRecipe).filter(Boolean);
+  const key = `diy:${mealKey(recipes)}`;
+  const current = new Set(state.shoppingChecked[key] || []);
+  if (checked) current.add(name);
+  else current.delete(name);
+  state.shoppingChecked = { ...state.shoppingChecked, [key]: [...current] };
+  save("shoppingChecked", state.shoppingChecked);
+  renderDiyPanel(recipes);
+}
+
 function addToDiy(id) {
   if (!state.diySelected.includes(id)) {
     state.diySelected.push(id);
+    state.diyPanelMode = "";
     save("diySelected", state.diySelected);
     showToast("已加入自选组合");
   }
@@ -1974,7 +2097,7 @@ function openDetail(id) {
     <div class="detail-section"><h3>买菜提示</h3><p>${escapeHtml(recipe.shoppingTips || "暂无买菜提示。")}</p></div>
     <div class="detail-section"><h3>替代食材</h3><p>${(recipe.substitutions || []).map(escapeHtml).join("；") || "暂无替代建议。"}</p></div>
   `;
-  $("#recipeDialog").showModal();
+  openRecipeDialog();
 }
 
 function openCustom(recipeId) {
@@ -2306,7 +2429,7 @@ function bindEvents() {
   });
   $("#addRecipeBtn").addEventListener("click", () => openCustom());
   $("#addRecipeFromMyBtn").addEventListener("click", () => openCustom());
-  $("#closeDialog").addEventListener("click", () => $("#recipeDialog").close());
+  $("#closeDialog").addEventListener("click", () => closeRecipeDialog());
   $("#closeCustomDialog").addEventListener("click", () => $("#customDialog").close());
   $("#customRecipeForm").addEventListener("submit", saveCustomRecipe);
   $("#customType").addEventListener("change", updateCustomIconSuggestion);
@@ -2334,6 +2457,12 @@ function bindEvents() {
     history.replaceState(null, "", `${location.origin}${location.pathname}`);
   });
   window.addEventListener("hashchange", detectSharedSnapshot);
+  window.addEventListener("popstate", () => {
+    if ($("#recipeDialog").open && recipeDialogHistoryToken) {
+      closeRecipeDialog({ fromPopstate: true });
+    }
+  });
+  bindRecipeDialogDismiss();
 
   document.body.addEventListener("click", (event) => {
     const target = event.target.closest("button");
@@ -2350,6 +2479,10 @@ function bindEvents() {
     if (target.dataset.copyShopping !== undefined) copyShoppingList();
     if (target.dataset.reuseMeal) reuseMeal(target.dataset.reuseMeal);
     if (target.dataset.presetMeat) setRandomPreset(Number(target.dataset.presetMeat), Number(target.dataset.presetVeg));
+    if (target.dataset.diyPanel) {
+      state.diyPanelMode = state.diyPanelMode === target.dataset.diyPanel ? "" : target.dataset.diyPanel;
+      renderDiy();
+    }
     if (target.dataset.filterTarget) {
       const filterState = target.dataset.filterTarget === "diy" ? state.diyFilters : state.recipeFilters;
       filterState[target.dataset.filterKind] = target.dataset.filterValue;
@@ -2358,6 +2491,7 @@ function bindEvents() {
     }
     if (target.dataset.removeSelected) {
       state.diySelected = state.diySelected.filter((id) => id !== target.dataset.removeSelected);
+      if (!state.diySelected.length) state.diyPanelMode = "";
       save("diySelected", state.diySelected);
       renderDiy();
     }
@@ -2366,9 +2500,10 @@ function bindEvents() {
   });
 
   document.body.addEventListener("change", (event) => {
-    const input = event.target.closest("input[data-shopping-item]");
+    const input = event.target.closest("input[data-shopping-item], input[data-diy-shopping-item]");
     if (!input) return;
-    toggleShoppingItem(input.dataset.shoppingItem, input.checked);
+    if (input.dataset.diyShoppingItem) toggleDiyShoppingItem(input.dataset.diyShoppingItem, input.checked);
+    else toggleShoppingItem(input.dataset.shoppingItem, input.checked);
   });
 }
 
